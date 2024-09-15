@@ -198,7 +198,7 @@ const RepartoDetalles = ({}) => {
       );
 
       // Registrar en cuenta corriente después de guardar todos los cambios
-    await registrarEnCuentaCorriente(repartoId);
+      await registrarEnCuentaCorriente(repartoId);
 
       setClientesArticulos((prevClientesArticulos) =>
         prevClientesArticulos.map((clienteArticulo) => ({
@@ -216,26 +216,29 @@ const RepartoDetalles = ({}) => {
       setLoading(false);
     }
   };
-const registrarEnCuentaCorriente = async (repartoId) => {
-  try {
-    const response = await fetch(`http://localhost:3000/api/cuenta-corriente/${repartoId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ repartoId }),
-    });
-    
-    if (!response.ok) {
-      throw new Error('Error al registrar en cuenta corriente');
-    }
+  const registrarEnCuentaCorriente = async (repartoId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/cuenta-corriente/${repartoId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ repartoId }),
+        }
+      );
 
-    const data = await response.json();
-    console.log('Datos registrados en cuenta corriente:', data);
-  } catch (error) {
-    console.error('Error al registrar en cuenta corriente:', error);
-  }
-};
+      if (!response.ok) {
+        throw new Error("Error al registrar en cuenta corriente");
+      }
+
+      const data = await response.json();
+      console.log("Datos registrados en cuenta corriente:", data);
+    } catch (error) {
+      console.error("Error al registrar en cuenta corriente:", error);
+    }
+  };
 
   if (!clientesArticulos.length) {
     return <div>No hay pedidos disponibles.</div>;
@@ -245,12 +248,12 @@ const registrarEnCuentaCorriente = async (repartoId) => {
     <div className="container mx-auto" id="reparto-details">
       <Link
         to="/RepartosNuevo"
-        className="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="my-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         Volver
       </Link>
-      <h1 className="text-2xl font-bold mb-4">
-        Detalles del Reparto N°: {numeroPedido}
+      <h1 className="text-2xl font-bold mb-4 mt-16">
+        Detalles del reparto N°: {numeroPedido}
       </h1>
       {error && <div className="text-red-600">{error}</div>}
       {loading ? (
@@ -261,7 +264,7 @@ const registrarEnCuentaCorriente = async (repartoId) => {
             {clientesArticulos.map((clienteArticulo) => (
               <div
                 key={clienteArticulo._id}
-                className="border px-3 rounded-md shadow-md"
+                className="border px-3 rounded-md shadow-md my-8"
               >
                 <div className="flex justify-between mb-2">
                   <h2 className="text-xl font-semibold">
@@ -382,8 +385,8 @@ const registrarEnCuentaCorriente = async (repartoId) => {
               </div>
             ))}
           </div>
-          <div className="mt-4 text-xl font-semibold">
-            Importe Total del Reparto: $
+          <div className="my-6 text-xl font-semibold">
+            Importe total del reparto: $
             {calcularImporteTotalReparto().toFixed(2)}
           </div>
           <div className="mt-4 flex space-x-4">
@@ -391,7 +394,7 @@ const registrarEnCuentaCorriente = async (repartoId) => {
               onClick={handleGuardarCambios}
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
             >
-              Guardar Cambios
+              Guardar cambios
             </button>
           </div>
         </>

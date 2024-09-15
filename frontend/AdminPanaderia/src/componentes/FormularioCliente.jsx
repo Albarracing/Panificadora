@@ -554,13 +554,13 @@ const FormularioCliente = ({ onClose }) => {
 
   return (
     <>
-      <p className="text-lg text-center mb-10">
-        {id ? "Editar Cliente" : "Agregar Cliente"}
-      </p>
       <form
-        className="p-3 bg-white rounded-lg shadow-md overflow-y-auto max-h-screen"
+        className="p-3 bg-white rounded-lg overflow-y-auto max-h-screen"
         onSubmit={handleSubmit}
       >
+        <h2 className="text-2xl font-semibold mb-6 col-span-full items-center">
+          {id ? "Editar cliente" : "Crear cliente"}
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <label className="uppercase text-gray-600 text-sm font-bold">
@@ -696,16 +696,6 @@ const FormularioCliente = ({ onClose }) => {
               </button>
             </div>
           </div>
-
-          {/* <div>
-          <label className="uppercase text-gray-600 text-sm font-bold">
-            Anulado
-          </label>
-          <input
-            type="checkbox"
-            className="border w-5 h-5 mt-1 bg-white rounded-lg"
-          />
-        </div> */}
         </div>
         <div className="mt-5">
           <h2 className="uppercase text-gray-600 text-sm font-bold">
@@ -774,8 +764,8 @@ const FormularioCliente = ({ onClose }) => {
         <div className="flex justify-end mt-5">
           <input
             type="submit"
-            value={id ? "Guardar cambios" : "Registrar cliente"}
-            className="bg-indigo-700 w-40 py-3 rounded-lg text-white uppercase font-bold hover:cursor-pointer hover:bg-indigo-800"
+            value={id ? "Guardar cambios" : "Crear cliente"}
+            className="bg-indigo-700 w-40 py-3 rounded-lg text-white font-bold hover:cursor-pointer hover:bg-indigo-800"
           />
           <button
             onClick={onClose}

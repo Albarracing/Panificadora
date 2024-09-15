@@ -136,9 +136,8 @@ const ListadoRepartos = () => {
       >
         Volver
       </Link>
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Repartos por Fecha
-      </h1>
+      <h1 className="text-3xl font-bold mt-6 text-left">Listado de vueltas</h1>
+      <h1 className="text-center text-red-600 mb-2">Seleccione una fecha</h1>
       <div className="flex justify-center mb-6">
         <DatePicker
           selected={selectedDate}

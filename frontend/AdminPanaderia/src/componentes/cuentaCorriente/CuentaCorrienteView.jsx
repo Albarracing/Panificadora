@@ -87,45 +87,46 @@ const CuentaCorrienteView = () => {
         Cuenta corriente
       </h1>
 
-      <table className="min-w-full bg-white border border-gray-300">
-        <thead>
-          <tr>
-            <th className="py-2 px-4 border-b">Cliente</th>
-            <th className="py-2 px-4 border-b">Localidad</th>
-            <th className="py-2 px-4 border-b">Saldo</th>
-            <th className="py-2 px-4 border-b">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clientes.map((cliente) => {
-            // Asegúrate de que el campo correcto sea cliente.estadoCuenta.totalDeuda
-            const { texto, clase } = determinarSaldo(
-              cliente.estadoCuenta?.totalDeuda || 0
-            );
-            console.log("Total Deuda:", cliente.estadoCuenta?.totalDeuda); // Ahora sí, el valor de totalDeuda
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border border-gray-300 mx-auto text-center">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="py-2 px-4 border-b">Cliente</th>
+              <th className="py-2 px-4 border-b">Localidad</th>
+              <th className="py-2 px-4 border-b">Saldo</th>
+              <th className="py-2 px-4 border-b">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {clientes.map((cliente) => {
+              const { texto, clase } = determinarSaldo(
+                cliente.estadoCuenta?.totalDeuda || 0
+              );
+              console.log("Total Deuda:", cliente.estadoCuenta?.totalDeuda);
 
-            return (
-              <tr key={cliente._id}>
-                <td className="py-2 px-4 border-b">
-                  {cliente.nombre} {cliente.apellido}
-                </td>
-                <td className="py-2 px-4 border-b">
-                  {cliente.localidad?.nombre || "No disponible"}
-                </td>
-                <td className={`py-2 px-4 border-b ${clase}`}>{texto}</td>
-                <td className="py-2 px-4 border-b">
-                  <button
-                    onClick={() => verDetalle(cliente)}
-                    className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
-                  >
-                    Ver Detalle
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+              return (
+                <tr key={cliente._id} className="hover:bg-gray-50">
+                  <td className="py-2 px-4 border-b">
+                    {cliente.nombre} {cliente.apellido}
+                  </td>
+                  <td className="py-2 px-4 border-b">
+                    {cliente.localidad?.nombre || "No disponible"}
+                  </td>
+                  <td className={`py-2 px-4 border-b ${clase}`}>{texto}</td>
+                  <td className="py-2 px-4 border-b">
+                    <button
+                      onClick={() => verDetalle(cliente)}
+                      className="bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600"
+                    >
+                      Ver Detalle
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

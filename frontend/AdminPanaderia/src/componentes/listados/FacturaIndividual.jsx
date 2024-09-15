@@ -128,9 +128,10 @@ const FacturacionIndividual = () => {
       >
         Volver
       </Link>
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Facturación por Fecha
+      <h1 className="text-3xl font-bold mt-5 text-left">
+        Facturación individual
       </h1>
+      <h1 className="text-center text-red-600 mb-2">Seleccione una fecha</h1>
       <div className="flex justify-center mb-6">
         <DatePicker
           selected={selectedDate}

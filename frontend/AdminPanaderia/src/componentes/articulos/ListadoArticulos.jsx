@@ -105,7 +105,7 @@ const ListadoDeArticulos = () => {
             onClick={() => handleOpenPopup()}
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded absolute right-4 mt-4"
           >
-            Nuevo Artículo
+            Crear artículo
           </button>
         </div>
       </div>
@@ -136,13 +136,13 @@ const ListadoDeArticulos = () => {
               Unidad
             </th>
             <th className="px-6 py-3 font-bold leading-4 tracking-wider">
-              Precio Mostrador
+              Precio mostrador
             </th>
             <th className="px-6 py-3 font-bold leading-4 tracking-wider">
-              Lugar Preparación
+              Sector preparación
             </th>
             <th className="px-6 py-3 font-bold leading-4 tracking-wider">
-              Precios por Localidad
+              Precios por localidad
             </th>
             <th className="px-6 py-3 font-bold leading-4 tracking-wider">
               Acciones
@@ -178,18 +178,18 @@ const ListadoDeArticulos = () => {
                   <div>No hay precios disponibles</div>
                 )}
               </td>
-              <td className="flex justify-center space-x-2 mt-5">
+              <td className="px-5 py-2 text-center border text-black">
                 <button
                   onClick={() => handleOpenPopup(articulo)}
-                  className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700 flex items-center"
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded mr-2 font-bold"
                 >
-                  <FontAwesomeIcon icon={faEdit} className="mr-1" />
+                  <FontAwesomeIcon icon={faEdit} />
                 </button>
                 <button
                   onClick={() => handleClickEliminar(articulo._id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700 flex items-center"
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded font-bold"
                 >
-                  <FontAwesomeIcon icon={faTrash} className="mr-1" />
+                  <FontAwesomeIcon icon={faTrash} />
                 </button>
               </td>
             </tr>

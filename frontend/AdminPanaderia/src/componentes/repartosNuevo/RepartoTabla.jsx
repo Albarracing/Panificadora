@@ -3,7 +3,10 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useRepartos from "../../hook/useRepartos";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { faTrash, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AiFillDelete } from "react-icons/ai";
+import { FaEdit } from "react-icons/fa";
 const RepartoTabla = () => {
   const [pedidosPorFecha, setPedidosPorFecha] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -82,100 +85,8 @@ const RepartoTabla = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    // <>
-    //   <div className="flex flex-col text-center min-h-screen bg-[url('./assets/Panadera.jpg')] bg-center bg-no-repeat bg-cover bg-opacity-40">
-    //     <div className="flex justify-between my-4 mx-4">
-    //       <Link
-    //         to="/"
-    //         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-    //       >
-    //         Volver
-    //       </Link>
-    //       <Link to="/crear-reparto">
-    //         <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-    //           +
-    //         </button>
-    //       </Link>
-    //     </div>
-    //     {/*         <h1 className="text-3xl font-bold mb-6">Pedidos</h1> */}
-    //     <h1 className="text-center text-white font-bold mb-4 text-2xl [text-shadow:_0px_0px_10px_#000000]">
-    //       REPARTOS
-    //     </h1>
-
-    //     <table className="w-full border-collapse">
-    //       <thead>
-    //         <tr className="bg-gray-200">
-    //           <th className="px-2 py-2 text-center border">Nro de Reparto</th>
-    //           <th className="px-2 py-2 text-center border">Fecha</th>
-    //           <th className="px-2 py-2 text-center border">Repartidor</th>
-    //           <th className="px-2 py-2 text-center border">Acciones</th>
-    //         </tr>
-    //       </thead>
-    //       <tbody>
-    //         {Object.keys(pedidosPorFecha).map((fecha) =>
-    //           currentPedidos(fecha).map((pedido) => (
-    //             <tr key={pedido._id} className="bg-white even:bg-gray-100">
-    //               <td className="border px-4 py-2">
-    //                 {pedido.numeroPedido || "N/A"}
-    //               </td>
-    //               <td className="border px-4 py-2">
-    //                 {new Date(pedido.fecha).toLocaleDateString() ||
-    //                   "Fecha Inválida"}
-    //               </td>
-    //               <td className="border px-4 py-2">{pedido.alias}</td>
-    //               <td className="border px-4 py-2">
-    //                 <button
-    //                   onClick={() => handleVerDetalles(pedido)}
-    //                   className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-    //                 >
-    //                   Ver Detalles
-    //                 </button>
-    //                 <button
-    //                   onClick={() => handleEliminarReparto(pedido._id)}
-    //                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
-    //                 >
-    //                   Eliminar
-    //                 </button>
-    //               </td>
-    //             </tr>
-    //           ))
-    //         )}
-    //       </tbody>
-    //     </table>
-    //     <div className="flex justify-center mt-4">
-    //       <nav>
-    //         <ul className="inline-flex -space-x-px">
-    //           {[
-    //             ...Array(
-    //               Math.ceil(
-    //                 Object.keys(pedidosPorFecha).reduce(
-    //                   (acc, fecha) => acc + pedidosPorFecha[fecha].length,
-    //                   0
-    //                 ) / itemsPerPage
-    //               )
-    //             ).keys(),
-    //           ].map((number) => (
-    //             <li key={number + 1}>
-    //               <button
-    //                 onClick={() => paginate(number + 1)}
-    //                 className={`py-2 px-3 leading-tight ${
-    //                   currentPage === number + 1
-    //                     ? "bg-blue-500 text-white"
-    //                     : "bg-white text-blue-500 border border-gray-300 hover:bg-gray-100"
-    //                 }`}
-    //               >
-    //                 {number + 1}
-    //               </button>
-    //             </li>
-    //           ))}
-    //         </ul>
-    //       </nav>
-    //     </div>
-    //   </div>
-    // </>
-
     <>
-      <div className="flex flex-col text-center min-h-screen bg-[url('./assets/Panadera.jpg')] bg-center bg-no-repeat bg-cover bg-opacity-40">
+      <div className="flex flex-col text-center min-h-screen">
         <div className="flex justify-between my-4 mx-4">
           <Link
             to="/"
@@ -185,12 +96,13 @@ const RepartoTabla = () => {
           </Link>
           <Link to="/crear-reparto">
             <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-              +
+              Crear reparto
             </button>
           </Link>
         </div>
+
         <h1 className="text-center text-white font-bold mb-4 text-2xl [text-shadow:_0px_0px_10px_#000000]">
-          REPARTOS{" "}
+          REPARTOS
         </h1>
         <table className="w-full border-collapse">
           <thead>
@@ -215,27 +127,29 @@ const RepartoTabla = () => {
                   <td className="border border-gray-400 px-4 py-2">
                     {pedido.alias}
                   </td>
-                  <td className="border border-gray-400 px-4 py-2">
-                    <button
-                      onClick={() => handleVerDetalles(pedido)}
-                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                    >
-                      Ver Detalles
-                    </button>
+                  <td className="border border-gray-400 px-4 py-2 text-center">
+                    <div className="flex justify-center items-center space-x-2">
+                      <button
+                        onClick={() => handleVerDetalles(pedido)}
+                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-32"
+                      >
+                        Ver Detalles
+                      </button>
 
-                    <button
-                      onClick={() => handleEditarReparto(pedido._id)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
-                    >
-                      Editar
-                    </button>
+                      <button
+                        onClick={() => handleEditarReparto(pedido._id)}
+                        className="bg-amber-400 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded w-12 h-10 flex justify-center"
+                      >
+                        <FaEdit className="text-lg" />
+                      </button>
 
-                    <button
-                      onClick={() => handleEliminarReparto(pedido._id)}
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
-                    >
-                      Eliminar
-                    </button>
+                      <button
+                        onClick={() => handleEliminarReparto(pedido._id)}
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-12 h-10 flex justify-center"
+                      >
+                        <AiFillDelete className="text-lg" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
