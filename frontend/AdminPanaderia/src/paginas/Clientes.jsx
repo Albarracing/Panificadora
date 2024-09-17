@@ -1,23 +1,3 @@
-// import React from "react";
-// import FormularioCliente from "../componentes/FormularioCliente";
-// import ListadoDeClientes from "../componentes/ListadoDeClientes";
-
-// const Clientes = () => {
-//   return (
-//     <div className="flex flex-col">
-//       <div className="bg-black py-5">
-//         <p className="text-white uppercase text-center text-3xl">
-//           Panadería Teodelina
-//         </p>
-//       </div>
-//       <div className="">
-//         <ListadoDeClientes />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Clientes;
 import React from "react";
 import ListadoDeClientes from "../componentes/ListadoDeClientes";
 
@@ -30,10 +10,8 @@ const Clientes = () => {
             Sistema de gestión de panificadora
           </p>
         </div>
-        <div className="flex-grow flex  bg-black/60">
-          <div className="w-full max-w-7xl mx-auto ">
-            <ListadoDeClientes />
-          </div>
+        <div className="">
+          <ListadoDeClientes />
         </div>
       </div>
     </>

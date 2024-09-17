@@ -10,10 +10,8 @@ const CuentaCorriente = () => {
             Sistema de gestión de panificadora
           </p>
         </div>
-        <div className="flex-grow flex  bg-black/60">
-          <div className="w-full max-w-7xl mx-auto ">
-            <CuentaCorrienteView />
-          </div>
+        <div className="">
+          <CuentaCorrienteView />
         </div>
       </div>
     </>

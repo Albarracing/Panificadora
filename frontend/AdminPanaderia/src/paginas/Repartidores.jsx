@@ -9,11 +9,8 @@ const Repartidores = () => {
           SISTEMA DE GESTIÓN DE PANIFICADORA
         </p>
       </div>
-
-      <div className="flex-grow flex  bg-black/60">
-        <div className="w-full max-w-7xl mx-auto ">
-          <ListaRepartidores />
-        </div>
+      <div className="">
+        <ListaRepartidores />
       </div>
     </div>
   );

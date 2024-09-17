@@ -76,58 +76,64 @@ const CuentaCorrienteView = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <Link
-        to="/"
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 ml-4"
-      >
-        Volver
-      </Link>
+    <>
+      <div className="flex mb-4">
+        <div className="flex space-x-4">
+          <Link
+            to="/"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 ml-4"
+          >
+            Volver
+          </Link>
+        </div>
+      </div>
       <h1 className="text-center text-white font-bold mb-4 text-2xl [text-shadow:_0px_0px_10px_#000000]">
-        Cuenta corriente
+        CUENTA CORRIENTE
       </h1>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300 mx-auto text-center">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="py-2 px-4 border-b">Cliente</th>
-              <th className="py-2 px-4 border-b">Localidad</th>
-              <th className="py-2 px-4 border-b">Saldo</th>
-              <th className="py-2 px-4 border-b">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {clientes.map((cliente) => {
-              const { texto, clase } = determinarSaldo(
-                cliente.estadoCuenta?.totalDeuda || 0
-              );
-              console.log("Total Deuda:", cliente.estadoCuenta?.totalDeuda);
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="px-2 py-2 text-center border">Cliente</th>
+            <th className="px-2 py-2 text-center border">Localidad</th>
+            <th className="px-2 py-2 text-center border">Saldo</th>
+            <th className="px-2 py-2 text-center border">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {clientes.map((cliente) => {
+            const { texto, clase } = determinarSaldo(
+              cliente.estadoCuenta?.totalDeuda || 0
+            );
+            console.log("Total Deuda:", cliente.estadoCuenta?.totalDeuda);
 
-              return (
-                <tr key={cliente._id} className="hover:bg-gray-50">
-                  <td className="py-2 px-4 border-b">
-                    {cliente.nombre} {cliente.apellido}
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    {cliente.localidad?.nombre || "No disponible"}
-                  </td>
-                  <td className={`py-2 px-4 border-b ${clase}`}>{texto}</td>
-                  <td className="py-2 px-4 border-b">
-                    <button
-                      onClick={() => verDetalle(cliente)}
-                      className="bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600"
-                    >
-                      Ver Detalle
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
+            return (
+              <tr key={cliente._id} className="bg-white even:bg-gray-100">
+                <td className="px-5 py-2 text-left border text-black">
+                  {cliente.nombre} {cliente.apellido}
+                </td>
+                <td className="px-5 py-2 text-center border text-black">
+                  {cliente.localidad?.nombre || "No disponible"}
+                </td>
+                <td
+                  className={`px-5 py-2 text-center border text-black ${clase}`}
+                >
+                  {texto}
+                </td>
+                <td className="px-5 py-2 text-center border text-black">
+                  <button
+                    onClick={() => verDetalle(cliente)}
+                    className="bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600"
+                  >
+                    Ver Detalle
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </>
   );
 };
 
