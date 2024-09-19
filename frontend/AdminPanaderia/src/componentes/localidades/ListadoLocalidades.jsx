@@ -112,15 +112,20 @@ const ListaLocalidades = () => {
           )}
           <button
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded absolute right-4 mt-4"
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+                setNombre("")         
+                setCodigoPostal("")   
+                setEditingLocalidad(null);
+                setShowModal(true)
+            }}
           >
             Crear localidad
           </button>
         </div>
       </div>
 
-      {/* Modal para crear o editar repartidor */}
-      {showModal && (
+      
+       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-md w-1/3 relative">
             <button
@@ -180,17 +185,21 @@ const ListaLocalidades = () => {
         </div>
       )}
 
-      <h1 className="text-center text-white font-bold mb-4 text-2xl [text-shadow:_0px_0px_10px_#000000]">
-        LOCALIDADES
-      </h1>
+      <h1 className="text-center text-white font-bold mb-4 text-2xl [text-shadow:_0px_0px_10px_#000000]">LOCALIDADES</h1>
 
-      {/* Tabla de repartidores */}
+      
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-200">
-            <th className="px-2 py-2 text-center border">Nombre</th>
-            <th className="px-2 py-2 text-center border">Código postal</th>
-            <th className="px-2 py-2 text-center border">Acciones</th>
+            <th className="px-2 py-2 text-center border">
+              Nombre
+            </th>
+            <th className="px-2 py-2 text-center border">
+              Código postal
+            </th>
+            <th className="px-2 py-2 text-center border">
+              Acciones
+            </th>
           </tr>
         </thead>
         <tbody>

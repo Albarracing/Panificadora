@@ -223,7 +223,7 @@ const crearReparto = async (req, res) => {
             }
 
             const precioUnitario = precioInfo.precio;
-            const cantidad = parseInt(articulo.cantidad, 10);
+            const cantidad = parseFloat(articulo.cantidad);
 
             if (isNaN(cantidad)) {
               throw new Error(
@@ -384,7 +384,7 @@ const actualizarReparto = async (req, res) => {
             }
 
             const precioUnitario = precioInfo.precio;
-            const cantidad = parseInt(articulo.cantidad, 10);
+            const cantidad = parseFloat(articulo.cantidad);
             if (isNaN(cantidad) || cantidad <= 0) {
               console.error(
                 "Cantidad de artículo inválida:",

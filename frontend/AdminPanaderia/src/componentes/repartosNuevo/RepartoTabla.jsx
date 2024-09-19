@@ -101,13 +101,15 @@ const RepartoTabla = () => {
           </Link>
         </div>
 
-        <h1 className="text-center text-white font-bold mb-4 text-2xl [text-shadow:_0px_0px_10px_#000000]">
-          REPARTOS
-        </h1>
+        <h1 className="text-center text-white font-bold mb-4 text-2xl [text-shadow:_0px_0px_10px_#000000]">REPARTOS</h1>
+
+
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-200">
-              <th className="px-2 py-2 text-center border">Nro de Reparto</th>
+              <th className="px-2 py-2 text-center border">
+                Nro de reparto
+              </th>
               <th className="px-2 py-2 text-center border">Fecha</th>
               <th className="px-2 py-2 text-center border">Repartidor</th>
               <th className="px-2 py-2 text-center border">Acciones</th>
@@ -133,7 +135,7 @@ const RepartoTabla = () => {
                         onClick={() => handleVerDetalles(pedido)}
                         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-32"
                       >
-                        Ver Detalles
+                        Ver detalles
                       </button>
 
                       <button
@@ -187,7 +189,7 @@ const RepartoTabla = () => {
         </div>
       </div>
     </>
-  );
+  )
 };
 
 export default RepartoTabla;

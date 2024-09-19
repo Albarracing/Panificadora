@@ -248,7 +248,7 @@ const ListaClientes = () => {
   }, [repartoData]);
 
   const handleCantidadChange = (clienteId, articuloId, value) => {
-    const cantidadNumerica = parseInt(value, 10);
+     const cantidadNumerica = parseFloat(value);
 
     if (isNaN(cantidadNumerica)) {
       console.error(
@@ -444,6 +444,13 @@ const ListaClientes = () => {
   };
 
   const handleArticuloAdicionalChange = (articuloId, cantidad) => {
+     const cantidadNumerica = parseFloat(cantidad);
+
+  // Verificamos si el valor es NaN (no numérico)
+  if (isNaN(cantidadNumerica)) {
+    console.error(`Cantidad inválida para el artículo ${articuloId}:`, cantidad);
+    return;
+  }
     setArticulosAdicionales((prev) => ({
       ...prev,
       [articuloId]: cantidad,
@@ -640,6 +647,7 @@ const ListaClientes = () => {
                           <span>{articuloNombre}:</span>
                           <input
                             type="number"
+                            step="0.01"
                             className="w-20 px-2 py-1 border rounded-md"
                             value={cantidadMostrar}
                             onChange={(e) =>
@@ -664,9 +672,9 @@ const ListaClientes = () => {
         <div className="flex justify-end mt-6">
           <button
             type="submit"
-            className="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-6 rounded"
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-6 rounded"
           >
-            Guardar Reparto
+            Guardar reparto
           </button>
         </div>
       </form>
@@ -674,7 +682,7 @@ const ListaClientes = () => {
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        contentLabel="Seleccionar Artículo Adicional"
+        contentLabel="Seleccionar artículo adicional"
         className="fixed inset-0 flex items-center justify-center z-50"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"
       >
@@ -701,11 +709,12 @@ const ListaClientes = () => {
                   <span className="text-lg">{art.nombre}</span>
                   <input
                     type="number"
+                    step="0.01"
                     value={articulosAdicionales[art._id] || ""}
                     onChange={(e) =>
                       handleArticuloAdicionalChange(
                         art._id,
-                        parseInt(e.target.value, 10)
+                         parseFloat(e.target.value)
                       )
                     }
                     placeholder="Cantidad"
@@ -714,16 +723,16 @@ const ListaClientes = () => {
                 </div>
               ))}
           </div>
-          <div className="mt-6 flex justify-end space-x-2">
+           <div className="mt-6 flex justify-end space-x-2">
             <button
               onClick={handleAddArticuloAdicional}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
-              Agregar Artículo
+              Agregar artículo
             </button>
             <button
               onClick={closeModal}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
             >
               Cerrar
             </button>

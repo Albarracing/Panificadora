@@ -245,14 +245,14 @@ const RepartoDetalles = ({}) => {
   }
 
   return (
-    <div className="container mx-auto" id="reparto-details">
+   <div className="container mx-auto" id="reparto-details">
       <Link
         to="/RepartosNuevo"
         className="my-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         Volver
       </Link>
-      <h1 className="text-2xl font-bold mb-4 mt-16">
+      <h1 className="text-2xl font-bold mb-4 mt-4">
         Detalles del reparto N°: {numeroPedido}
       </h1>
       {error && <div className="text-red-600">{error}</div>}
@@ -284,11 +284,11 @@ const RepartoDetalles = ({}) => {
                           )
                         }
                       />
-                      <span className="ml-2">Pagado Completo</span>
+                      <span className="ml-2">Pagado completo</span>
                     </label>
                     {!clienteArticulo.pagadoCompleto && (
                       <label className="flex items-center">
-                        Monto Pagado:
+                        Monto pagado:
                         <input
                           type="number"
                           value={clienteArticulo.montoPagado || ""}
@@ -344,7 +344,7 @@ const RepartoDetalles = ({}) => {
                           />
                         </div>
                         <div className="text-gray-700">
-                          Importe Actual: ${(articulo.importe || 0).toFixed(2)}
+                          Importe actual: ${(articulo.importe || 0).toFixed(2)}
                         </div>
                       </div>
                     ))}
@@ -367,18 +367,12 @@ const RepartoDetalles = ({}) => {
                     </div>
                     <div className="flex space-x-4 mt-1">
                       <div className="text-right text-lg font-semibold">
-                        Importe Total: $
+                        Importe total: $
                         {(clienteArticulo.totalCliente || 0).toFixed(2)}
                       </div>
                       <div className="text-right text-lg font-semibold text-red-600">
                         Deuda: ${clienteArticulo.deuda.toFixed(2)}
                       </div>
-                      {/* <div className="text-right text-lg font-semibold">
-                        Deuda Acumulada: $
-                        {(
-                          clienteArticulo.clienteId.deudaAcumulada || 0
-                        ).toFixed(2)}
-                      </div> */}
                     </div>
                   </div>
                 </div>

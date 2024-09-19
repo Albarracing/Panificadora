@@ -95,8 +95,7 @@ const ListadoDeArticulos = () => {
     <>
       <div className="flex mb-4">
         <div className="flex space-x-4">
-          <Link
-            to="/"
+          <Link to="/"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 ml-4"
           >
             Volver
@@ -119,9 +118,8 @@ const ListadoDeArticulos = () => {
         </PopupArticulo>
       )}
 
-      <h1 className="text-center text-white font-bold mb-4 text-2xl [text-shadow:_0px_0px_10px_#000000]">
-        ARTÍCULOS
-      </h1>
+      <h1 className="text-center text-white font-bold mb-4 text-2xl [text-shadow:_0px_0px_10px_#000000]">ARTÍCULOS</h1>
+
 
       <table className="w-full border-collapse">
         <thead>
