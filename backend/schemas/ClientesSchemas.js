@@ -2,8 +2,8 @@ import Join from "@hapi/joi";
 
 const clienteSchema = Join.object({
   codigo: Join.number(),
-  nombre: Join.string().required(),
-  apellido: Join.string().required(),
+  nombre: Join.string(),
+  apellido: Join.string(),
   localidad: Join.string().required(),
   direccion: Join.string().required(),
   celular: Join.number(),

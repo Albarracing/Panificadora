@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 
 const clienteSchema = new mongoose.Schema({
   codigo: { type: Number, unique: true },
-  nombre: { type: String, required: true },
-  apellido: { type: String, required: true },
+  nombre: { type: String, required:false },
+  apellido: { type: String, required: false },
   direccion: { type: String, required: true },
   celular: { type: Number, required: true },
   descuento: { type: Number, require: true },

@@ -167,8 +167,7 @@ const FormularioCliente = ({ onClose }) => {
     // Validar que todos los campos necesarios estén presentes y sean válidos
     if (
       [
-        nombre,
-        apellido,
+        
         direccion,
         celular,
         localidadId,
@@ -181,7 +180,7 @@ const FormularioCliente = ({ onClose }) => {
       !localidadNombre
     ) {
       setAlerta({
-        msg: "Todos los campos son obligatorios, incluyendo la localidad.",
+         msg: "Todos los campos son obligatorios, excepto nombre y apellido.",
         error: true,
       });
       return;

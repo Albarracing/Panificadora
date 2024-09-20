@@ -218,8 +218,7 @@ const registrar = async (req, res) => {
     }
 
     if (
-      !nombre ||
-      !apellido ||
+      
       !direccion ||
       !celular ||
       !localidadId ||

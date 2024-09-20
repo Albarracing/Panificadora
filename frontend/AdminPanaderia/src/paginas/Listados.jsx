@@ -17,29 +17,26 @@ const Listados = () => {
           Volver
         </Link>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 px-6">
+      <h1 className="text-center text-white font-bold mb-4 text-2xl [text-shadow:_0px_0px_10px_#000000]">LISTADOS</h1>
+
+      <div className="flex flex-wrap gap-6 ml-4 justify-center">
         <Link to="/ListadoVueltas">
-          <button className="bg-red-600 hover:bg-red-500 w-80 h-12 rounded-md uppercase text-white font-semibold transition duration-300 shadow-lg">
+          <button className="bg-red-600 hover:bg-red-500 w-60 h-12 rounded-md uppercase text-white font-semibold transition duration-300 shadow-lg">
             Vueltas
           </button>
         </Link>
-        {/* <Link to="/ListadoRepartos">
-          <button className="bg-indigo-600 hover:bg-indigo-500 w-80 h-12 rounded-md uppercase text-white font-semibold transition duration-300 shadow-lg">
-            Listado Repartos
-          </button>
-        </Link> */}
         <Link to="/ListadoIndividual">
-          <button className="bg-cyan-500 hover:bg-cyan-600 w-80 h-12 rounded-md uppercase text-white font-semibold transition duration-300 shadow-lg">
+          <button className="bg-cyan-500 hover:bg-cyan-600 w-60 h-12 rounded-md uppercase text-white font-semibold transition duration-300 shadow-lg">
             Individual
           </button>
         </Link>
         <Link to="/ListadoRepartidor">
-          <button className="bg-amber-400 hover:bg-amber-500 w-80 h-12 rounded-md uppercase text-white font-semibold transition duration-300 shadow-lg">
+          <button className="bg-amber-400 hover:bg-amber-500 w-60 h-12 rounded-md uppercase text-white font-semibold transition duration-300 shadow-lg">
             Lista
           </button>
         </Link>
         <Link to="/ListadoProductos">
-          <button className="bg-indigo-600 hover:bg-indigo-500 w-80 h-12 rounded-md uppercase text-white font-semibold transition duration-300 shadow-lg">
+          <button className="bg-indigo-600 hover:bg-indigo-500 w-60 h-12 rounded-md uppercase text-white font-semibold transition duration-300 shadow-lg">
             Productos
           </button>
         </Link>

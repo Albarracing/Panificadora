@@ -165,9 +165,9 @@ const ListadoRepartidor = () => {
       <div className="flex justify-end mt-6">
         <button
           onClick={generatePDF}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
         >
-          Generar PDF
+          Imprimir factura
         </button>
       </div>
     </div>

@@ -60,6 +60,7 @@ const FacturacionIndividual = () => {
             direccion: clienteArticulo.clienteId.direccion,
             articulos: clienteArticulo.articulos.map((articulo) => ({
               nombre: articulo.articuloId.nombre,
+               precio: articulo.precio ? articulo.precio : (articulo.importe / articulo.cantidad).toFixed(2),
               cantidad: articulo.cantidad,
               importe: articulo.importe,
             })),
@@ -82,12 +83,12 @@ const FacturacionIndividual = () => {
   const generatePDF = (factura, fechaSeleccionada) => {
     const doc = new jsPDF();
 
-    //const formattedDate = fechaSeleccionada.toLocaleDateString();
+    const formattedDate = new Date(fechaSeleccionada).toLocaleDateString();
 
     doc.setFontSize(12);
     doc.text("Panaderia Teodelina", 105, 20, { align: "center" });
     doc.text("9 de julio 130 Teodelina-Santa Fe", 105, 26, { align: "center" });
-    doc.text("Fecha de Emisión: " + new Date().toLocaleDateString(), 105, 36, {
+    doc.text(`Fecha de Emisión: ${formattedDate}`, 105, 36, {
       align: "center",
     });
 
@@ -98,12 +99,13 @@ const FacturacionIndividual = () => {
     const tableData = factura.articulos.map((articulo) => [
       articulo.nombre,
       articulo.cantidad,
-      articulo.importe.toFixed(2),
+     `$${Number(articulo.precio).toFixed(2)}`,
+      `$${Number(articulo.importe).toFixed(2)}`,
     ]);
 
     doc.autoTable({
       startY: 70,
-      head: [["Descripción", "Cantidad", "Importe"]],
+      head: [["Descripción", "Cantidad","Precio unidad", "Importe"]],
       body: tableData,
       theme: "striped",
       styles: { fillColor: [255, 255, 255], textColor: [0, 0, 0] },
@@ -118,6 +120,12 @@ const FacturacionIndividual = () => {
     doc.save(
       `factura_${factura.cliente}_${new Date().toLocaleDateString()}.pdf`
     );
+  };
+
+   const generateAllPDFs = () => {
+    facturas.forEach((factura) => {
+      generatePDF(factura, selectedDate);
+    });
   };
 
   return (
@@ -150,14 +158,16 @@ const FacturacionIndividual = () => {
                 <tr>
                   <th className="px-4 py-2 border">Descripción</th>
                   <th className="px-4 py-2 border">Cantidad</th>
+                   <th className="px-4 py-2 border">Precio unidad</th>
                   <th className="px-4 py-2 border">Importe</th>
                 </tr>
               </thead>
               <tbody>
                 {factura.articulos.map((articulo, i) => (
-                  <tr key={i}>
+                  <tr key={i} className="text-center">
                     <td className="px-4 py-2 border">{articulo.nombre}</td>
                     <td className="px-4 py-2 border">{articulo.cantidad}</td>
+                    <td className="px-4 py-2 border">${articulo.precio}</td>
                     <td className="px-4 py-2 border">
                       ${articulo.importe.toFixed(2)}
                     </td>
@@ -170,14 +180,24 @@ const FacturacionIndividual = () => {
             </p>
 
             <button
-              onClick={() => generatePDF(factura)}
+              onClick={() => generatePDF(factura, selectedDate)}
               className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
             >
               Imprimir Factura
             </button>
+           
           </div>
         ))}
       </div>
+      <div className="flex justify-end">
+        <button
+               onClick={generateAllPDFs}
+              className="mb-6 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Imprimir Todas las Facturas
+            </button>
+      </div>
+       
     </div>
   );
 };
