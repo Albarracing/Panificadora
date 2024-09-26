@@ -218,7 +218,6 @@ const registrar = async (req, res) => {
     }
 
     if (
-      
       !direccion ||
       !celular ||
       !localidadId ||
@@ -257,6 +256,7 @@ const registrar = async (req, res) => {
       articuloId: articulo.articuloId,
       nombre: articulo.nombre,
       cantidad: articulo.cantidad,
+      descuentoPorArt: parseFloat(articulo.descuento || 0),
     }));
 
     // Guardar los artículos en la base de datos
@@ -318,9 +318,16 @@ const actualizarCliente = async (req, res) => {
     // Verificar y actualizar los artículos
     if (articuloData && articuloData.length > 0) {
       for (let articulo of articuloData) {
+        console.log("Artículo a actualizar:", articulo);
         await ArticuloCliente.findOneAndUpdate(
           { clienteId: id, articuloId: articulo.articuloId },
-          { $set: { cantidad: articulo.cantidad } },
+          {
+            $set: {
+              cantidad: articulo.cantidad,
+              descuentoPorArt: parseFloat(articulo.descuento || 0),
+            },
+          },
+
           { upsert: true } // Esto creará el documento si no existe
         );
       }

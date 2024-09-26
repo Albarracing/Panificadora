@@ -49,7 +49,7 @@ const FormularioCliente = ({ onClose }) => {
         .then((articulosCliente) => {
           // Obtener todos los artículos disponibles
           axios
-            .get(`http://localhost:3000/api/articulos`) // Cambia esta ruta si es necesario
+            .get(`http://localhost:3000/api/articulos`)
             .then((response) => {
               const articulosDisponibles = response.data;
 
@@ -75,6 +75,9 @@ const FormularioCliente = ({ onClose }) => {
                           sabado: 0,
                           domingo: 0,
                         },
+                    descuento: articuloCliente
+                      ? articuloCliente.descuentoPorArt || 0
+                      : 0,
                   };
                 }
               );
@@ -167,7 +170,6 @@ const FormularioCliente = ({ onClose }) => {
     // Validar que todos los campos necesarios estén presentes y sean válidos
     if (
       [
-        
         direccion,
         celular,
         localidadId,
@@ -180,7 +182,7 @@ const FormularioCliente = ({ onClose }) => {
       !localidadNombre
     ) {
       setAlerta({
-         msg: "Todos los campos son obligatorios, excepto nombre y apellido.",
+        msg: "Todos los campos son obligatorios, excepto nombre y apellido.",
         error: true,
       });
       return;
@@ -201,6 +203,7 @@ const FormularioCliente = ({ onClose }) => {
           articuloId: producto._id,
           nombre: producto.nombre,
           cantidad: producto.cantidad,
+          descuento: producto.descuento,
         })),
         ...articulosSeleccionados.map((articuloId) => ({
           articuloId,
@@ -278,41 +281,33 @@ const FormularioCliente = ({ onClose }) => {
   };
 
   const handleCantidadChange = (e, productoId, dia) => {
-  const value = parseFloat(e.target.value); // parseFloat directamente sobre el valor
-  // Actualizar la cantidad del producto seleccionado para el día específico
-  setProductos((prevProductos) =>
-    prevProductos.map((producto) =>
-      producto._id === productoId
-        ? {
-            ...producto,
-            cantidad: {
-              ...producto.cantidad,
-              [dia]: value || 0, // Usar el valor directamente, permitiendo decimales
-            },
-          }
-        : producto
-    )
-  );
-};
+    const value = parseFloat(e.target.value); // parseFloat directamente sobre el valor
+    // Actualizar la cantidad del producto seleccionado para el día específico
+    setProductos((prevProductos) =>
+      prevProductos.map((producto) =>
+        producto._id === productoId
+          ? {
+              ...producto,
+              cantidad: {
+                ...producto.cantidad,
+                [dia]: value || 0, // Usar el valor directamente, permitiendo decimales
+              },
+            }
+          : producto
+      )
+    );
+  };
 
-
-  // const handleCantidadChange = (e, productoId, dia) => {
-  //   const { value } = e.target;
-  //   // Actualizar la cantidad del producto seleccionado para el día específico
-  //   setProductos((prevProductos) =>
-  //     prevProductos.map((producto) =>
-  //       producto._id === productoId
-  //         ? {
-  //             ...producto,
-  //             cantidad: {
-  //               ...producto.cantidad,
-  //               [dia]: parseInt(value) || 0,
-  //             },
-  //           }
-  //         : producto
-  //     )
-  //   );
-  // };
+  const handleDescuentoChange = (e, productoId) => {
+    const { value } = e.target;
+    setProductos((prevProductos) =>
+      prevProductos.map((producto) =>
+        producto._id === productoId
+          ? { ...producto, descuento: value }
+          : producto
+      )
+    );
+  };
 
   const handleArticuloSeleccionChange = (articuloId) => {
     setArticulosSeleccionados((prevSeleccionados) =>
@@ -478,6 +473,10 @@ const FormularioCliente = ({ onClose }) => {
                   <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Producto
                   </th>
+
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Descuento (%)
+                  </th>
                   {[
                     "lunes",
                     "martes",
@@ -502,6 +501,20 @@ const FormularioCliente = ({ onClose }) => {
                     <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
                       {producto.nombre}
                     </td>
+
+                    <td className="px-4 py-2 whitespace-nowrap">
+                      <input
+                        className="border w-16 h-8 p-1 bg-white rounded-lg text-center"
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="0.01"
+                        value={producto.descuento || 0} // Aquí añadimos el campo descuento
+                        onChange={(e) => handleDescuentoChange(e, producto._id)} // Nueva función para manejar el descuento
+                        placeholder="% Descuento"
+                      />
+                    </td>
+
                     {[
                       "lunes",
                       "martes",

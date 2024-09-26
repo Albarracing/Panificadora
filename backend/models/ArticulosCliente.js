@@ -21,6 +21,7 @@ const articuloClienteSchema = new mongoose.Schema({
     sabado: { type: Number, default: 0 },
     domingo: { type: Number, default: 0 },
   },
+  descuentoPorArt: { type: Number, default: 0 },
 });
 
 // Crear índices en los campos de cantidad para cada día

@@ -12,6 +12,7 @@ const clienteSchema = Join.object({
       productoId: Join.string().required(),
       nombre: Join.string(),
       cantidad: Join.number().integer().min(1).required(),
+      descuentoPorArt: Join.number(),
     })
   ),
 });
