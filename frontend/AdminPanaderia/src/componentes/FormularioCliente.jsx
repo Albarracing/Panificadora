@@ -37,8 +37,14 @@ const FormularioCliente = ({ onClose }) => {
       setApellido(cliente.apellido);
       setDireccion(cliente.direccion);
       setCelular(cliente.celular);
-      setLocalidadId(cliente.localidadId);
-      setLocalidadNombre(cliente.localidadNombre);
+      if (cliente.localidad) {
+        // Verifica que cliente.localidad exista
+        setLocalidadId(cliente.localidad._id || "");
+        setLocalidadNombre(cliente.localidad.nombre || "");
+      } else {
+        setLocalidadId(""); // Si no existe, lo reinicia
+        setLocalidadNombre("");
+      }
       setDescuento(cliente.descuento);
       setVuelta(cliente.vuelta);
       setTipoCliente(cliente.tipoCliente || "lista");

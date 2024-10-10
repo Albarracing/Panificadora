@@ -13,6 +13,7 @@ export const RepartosProvider = ({ children }) => {
     const { data } = await axios.get(
       `http://localhost:3000/api/repartos/${id}`
     );
+    console.log("Datos del reparto:", data);
     return data;
   };
 

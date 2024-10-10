@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, Link } from "react-router-dom";
 import useRepartos from "../../hook/useRepartos";
-import debounce from "lodash/debounce";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import axios from "axios";
 
 const RepartoDetalles = ({}) => {
   const location = useLocation();
-  const { pedidos, repartoId, numeroPedido } = location.state || {
+  const { pedidos, repartoId, numeroPedido, fecha } = location.state || {
     pedidos: [],
     repartoId: null,
     numeroPedido: null,
@@ -23,12 +24,54 @@ const RepartoDetalles = ({}) => {
   const [reparto, setReparto] = useState(null);
 
   useEffect(() => {
+    console.log("location.state:", location.state); // Muestra los datos de location.state
+    if (repartoId) {
+      const obtenerReparto = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/api/repartos/${repartoId}`
+          );
+          const repartoData = response.data;
+          console.log(
+            "Detalles del reparto obtenidos del backend:",
+            repartoData
+          ); // Aquí mostramos la fecha
+          setReparto(repartoData);
+        } catch (error) {
+          setError("Error al obtener los detalles del reparto");
+          console.error(error);
+        }
+      };
+      obtenerReparto();
+    }
+  }, [repartoId]);
+
+  useEffect(() => {
     console.log("location.state:", location.state);
     console.log("Pedidos recibidos:", pedidos); // Agregar esta línea
     if (pedidos.length > 0) {
       setClientesArticulos(pedidos.map(prepararClienteArticulo));
     }
   }, [pedidos]);
+
+  useEffect(() => {
+    const obtenerReparto = async () => {
+      setLoading(true);
+      try {
+        const repartoData = await obtenerRepartoPorId(repartoId); // Asegúrate de que esta función se llame correctamente
+        console.log("Datos del reparto:", repartoData); // Añade este log
+        setReparto(repartoData);
+      } catch (error) {
+        setError("Error al cargar los detalles del reparto");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (repartoId) {
+      obtenerReparto();
+    }
+  }, [repartoId]);
 
   const prepararClienteArticulo = (clienteArticulo) => ({
     ...clienteArticulo,
@@ -244,23 +287,117 @@ const RepartoDetalles = ({}) => {
     return <div>No hay pedidos disponibles.</div>;
   }
 
+  // Función para generar el PDF
+
+  const generarPDF = () => {
+    const doc = new jsPDF();
+
+    // Título del documento
+    doc.setFontSize(18);
+    doc.text("Detalles del Reparto", 14, 20);
+
+    // Obtener la fecha actual
+    const fechaActual = new Date().toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    doc.setFontSize(12);
+    doc.text(`Fecha: ${fechaActual}`, 14, 30);
+
+    // Datos para la tabla
+    const rows = [];
+    let totalReparto = 0; // Variable para el total del reparto
+
+    clientesArticulos.forEach((clienteArticulo) => {
+      const nombreCliente = `${clienteArticulo.clienteId.nombre} ${clienteArticulo.clienteId.apellido}`;
+      const pago = clienteArticulo.pagadoCompleto
+        ? `Pagado completo: $${clienteArticulo.totalCliente.toFixed(2)}`
+        : `Monto pagado: $${clienteArticulo.montoPagado.toFixed(2)}`;
+
+      // Agregar una fila para cada artículo, con el cliente solo en la primera
+      clienteArticulo.articulos.forEach((articulo, index) => {
+        if (index === 0) {
+          rows.push([
+            nombreCliente,
+            articulo.articuloId.nombre,
+            articulo.cantidad,
+            `$${articulo.importe.toFixed(2)}`,
+            `${articulo.cantidadDevuelta || 0}`, // Cantidad devuelta
+            pago,
+            clienteArticulo.deuda.toFixed(2),
+            clienteArticulo.totalCliente.toFixed(2),
+          ]);
+          totalReparto += clienteArticulo.totalCliente; // Acumular total del reparto
+        } else {
+          rows.push([
+            "", // Dejar vacío para el nombre del cliente en las filas subsiguientes
+            articulo.articuloId.nombre,
+            articulo.cantidad,
+            `$${articulo.importe.toFixed(2)}`,
+            `${articulo.cantidadDevuelta || 0}`, // Cantidad devuelta
+            "", // Dejar vacío para el pago
+            "", // Dejar vacío para la deuda
+            "", // Dejar vacío para el total
+          ]);
+        }
+      });
+    });
+
+    // Definir columnas
+    const columns = [
+      { header: "Cliente", dataKey: "cliente" },
+      { header: "Artículo", dataKey: "articulo" },
+      { header: "Cantidad", dataKey: "cantidad" },
+      { header: "Importe", dataKey: "importe" },
+      { header: "Devolución", dataKey: "devolucion" },
+      { header: "Pago", dataKey: "pago" },
+      { header: "Deuda", dataKey: "deuda" },
+      { header: "Total", dataKey: "total" },
+    ];
+
+    // Agregar tabla al documento
+    autoTable(doc, {
+      head: [columns.map((col) => col.header)],
+      body: rows,
+      startY: 40, // Ajustar la posición para que no se solape con la fecha
+      theme: "grid",
+    });
+
+    // Agregar el total del reparto debajo de la tabla
+    doc.setFontSize(14);
+    doc.text(
+      `Importe total del reparto: $${totalReparto.toFixed(2)}`,
+      14,
+      doc.autoTable.previous.finalY + 10
+    );
+
+    // Guardar el PDF
+    doc.save("reparto_detalles.pdf");
+  };
+
   return (
-   <div className="container mx-auto" id="reparto-details">
+    <div className="container mx-auto " id="reparto-details">
       <Link
         to="/RepartosNuevo"
-        className="my-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className=" m-3 my-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         Volver
       </Link>
-      <h1 className="text-2xl font-bold mb-4 mt-4">
+      <h1 className="text-2xl font-bold mb-4 mt-4 m-3">
         Detalles del reparto N°: {numeroPedido}
       </h1>
-      {error && <div className="text-red-600">{error}</div>}
+      <h2 className="text-lg mb-4 m-3">
+        Fecha del reparto:{" "}
+        {reparto
+          ? new Date(reparto.fecha).toLocaleDateString()
+          : "Fecha no disponible"}
+      </h2>
       {loading ? (
         <div>Cargando...</div>
       ) : (
         <>
-          <div className="space-y-4">
+          <div className="space-y-4 m-3">
             {clientesArticulos.map((clienteArticulo) => (
               <div
                 key={clienteArticulo._id}
@@ -365,7 +502,7 @@ const RepartoDetalles = ({}) => {
                         ).toFixed(2)}
                       </div>
                     </div>
-                    <div className="flex space-x-4 mt-1">
+                    <div className="flex space-x-4 mt-1 ">
                       <div className="text-right text-lg font-semibold">
                         Importe total: $
                         {(clienteArticulo.totalCliente || 0).toFixed(2)}
@@ -379,18 +516,25 @@ const RepartoDetalles = ({}) => {
               </div>
             ))}
           </div>
-          <div className="my-6 text-xl font-semibold">
+          <div className="my-6 text-xl font-semibold m-3">
             Importe total del reparto: $
             {calcularImporteTotalReparto().toFixed(2)}
           </div>
-          <div className="mt-4 flex space-x-4">
+          <div className="mt-4 flex space-x-10 m-3 flex-row">
             <button
               onClick={handleGuardarCambios}
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
             >
               Guardar cambios
             </button>
+            <button
+              onClick={generarPDF}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Generar PDF
+            </button>
           </div>
+          <div></div>
         </>
       )}
     </div>
