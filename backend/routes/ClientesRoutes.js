@@ -46,4 +46,5 @@ router.get("/", obtenerClientes);
 router.post("/", registrar);
 router.put("/:id", actualizarCliente);
 router.delete("/:id", eliminarCliente);
+
 export default router;

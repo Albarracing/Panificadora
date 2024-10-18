@@ -278,7 +278,7 @@ const registrar = async (req, res) => {
 const actualizarCliente = async (req, res) => {
   let id;
   try {
-    id = req.params.id;
+    id = req.params.id.trim(); // Elimina saltos de línea y espacios adicionales
     console.log(`ID recibido: ${id}`);
 
     const {
@@ -295,14 +295,15 @@ const actualizarCliente = async (req, res) => {
     } = req.body;
 
     console.log(`Datos recibidos:`, req.body);
-
+    console.log("Datos recibidos para actualizar cliente:", articuloData);
+    // Verificar si el cliente ya existe
     const clienteExistente = await Cliente.findById(id);
     if (!clienteExistente) {
       console.log(`Cliente no encontrado para el ID: ${id}`);
       return res.status(404).json({ error: "Cliente no encontrado" });
     }
 
-    // Actualizar los datos básicos del cliente
+    // Actualizar los datos básicos del cliente (no crear uno nuevo)
     clienteExistente.nombre = nombre;
     clienteExistente.apellido = apellido;
     clienteExistente.direccion = direccion;
@@ -318,18 +319,36 @@ const actualizarCliente = async (req, res) => {
     // Verificar y actualizar los artículos
     if (articuloData && articuloData.length > 0) {
       for (let articulo of articuloData) {
-        console.log("Artículo a actualizar:", articulo);
-        await ArticuloCliente.findOneAndUpdate(
-          { clienteId: id, articuloId: articulo.articuloId },
-          {
-            $set: {
-              cantidad: articulo.cantidad,
-              descuentoPorArt: parseFloat(articulo.descuento || 0),
-            },
-          },
+        console.log("Artículo a actualizar o eliminar:", articulo);
 
-          { upsert: true } // Esto creará el documento si no existe
-        );
+        // Verificar si todos los días tienen cantidad 0
+        if (
+          articulo.cantidad.lunes === 0 &&
+          articulo.cantidad.martes === 0 &&
+          articulo.cantidad.miercoles === 0 &&
+          articulo.cantidad.jueves === 0 &&
+          articulo.cantidad.viernes === 0 &&
+          articulo.cantidad.sabado === 0 &&
+          articulo.cantidad.domingo === 0
+        ) {
+          // Eliminar artículos con cantidad 0
+          await ArticuloCliente.deleteOne({
+            clienteId: id,
+            articuloId: articulo.articuloId,
+          });
+        } else {
+          // Actualizar o insertar artículos con cantidad mayor que 0
+          await ArticuloCliente.findOneAndUpdate(
+            { clienteId: id, articuloId: articulo.articuloId },
+            {
+              $set: {
+                cantidad: articulo.cantidad,
+                descuentoPorArt: parseFloat(articulo.descuento || 0),
+              },
+            },
+            { upsert: true } // Solo para los artículos
+          );
+        }
       }
     }
 

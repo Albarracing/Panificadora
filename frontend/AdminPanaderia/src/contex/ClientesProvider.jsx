@@ -73,10 +73,19 @@ export const ClientesProvider = ({ children }) => {
 
   const actualizarCliente = async (clienteData, id) => {
     try {
+      console.log(`Actualizando cliente con ID: ${id}`);
+      console.log(
+        "Datos a enviar al backend:",
+        JSON.stringify(clienteData, null, 2)
+      );
+
       const { data } = await axios.put(
         `http://localhost:3000/api/clientes/${id}`,
         clienteData
       );
+
+      console.log("Datos de respuesta del backend:", data);
+      // Aquí puedes agregar lógica para verificar si se eliminó algún artículo
       setClientes((prevClientes) =>
         prevClientes.map((cliente) =>
           cliente._id === id ? data.clienteActualizado : cliente

@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import conectarDB from "./config/db.js";
 import bodyParser from "body-parser";
-//import parseArticuloData from "./middlewares/ArticuloDataParser.js";
+import ArticulosclientesRoutes from "./routes/ArticulosClientesRoutes.js";
 import repartidorRoutes from "./routes/RepartidorRoutes.js";
 import clientesRoutes from "./routes/ClientesRoutes.js";
 import articulosRoutes from "./routes/ArticulosRoutes.js";
@@ -31,7 +31,7 @@ app.use("/api/articulos", articulosRoutes);
 app.use("/api/repartos", repartosRoutes);
 app.use("/api/localidades", LocalidadRoutes);
 app.use("/api/cuenta-corriente", cuentaCorrienteRoutes);
-//app.use("/api/devoluciones", DevolucioneRoutes);
+app.use("/api/articulos-clientes", ArticulosclientesRoutes);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor funcionando en el puerto ${PORT}`);
