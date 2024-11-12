@@ -22,9 +22,72 @@ const RepartoDetalles = ({}) => {
   const [loading, setLoading] = useState(false);
   const [tempCantidadDevuelta, setTempCantidadDevuelta] = useState({});
   const [reparto, setReparto] = useState(null);
+  const [tipoCliente, setTipoCliente] = useState(""); // Filtro para tipo de cliente
+  const [clientesFiltrados, setClientesFiltrados] = useState([]);
+  const [localidades, setLocalidades] = useState([]);
+  const [selectedLocalidad, setSelectedLocalidad] = useState("");
+  const [selectedTipoCliente, setSelectedTipoCliente] = useState("");
+  const [filteredClientes, setFilteredClientes] = useState([]);
+
+  // Este efecto se ejecuta cada vez que cambian los filtros de localidad o tipo de cliente
+  useEffect(() => {
+    filtrarClientes();
+  }, [selectedLocalidad, selectedTipoCliente, clientesArticulos]);
+
+  const filtrarClientes = () => {
+    let clientesFiltrados = clientesArticulos;
+
+    // Filtrar por localidad si se ha seleccionado una
+    if (selectedLocalidad) {
+      clientesFiltrados = clientesFiltrados.filter(
+        (clienteArticulo) =>
+          clienteArticulo.clienteId.localidad === selectedLocalidad
+      );
+    }
+
+    // Filtrar por tipo de cliente si se ha seleccionado uno
+    if (selectedTipoCliente) {
+      clientesFiltrados = clientesFiltrados.filter(
+        (clienteArticulo) =>
+          clienteArticulo.clienteId.tipoCliente === selectedTipoCliente
+      );
+    }
+
+    setFilteredClientes(clientesFiltrados);
+  };
+
+  // Manejadores de cambio de filtros
+  const handleLocalidadChange = (e) => {
+    setSelectedLocalidad(e.target.value);
+  };
+
+  const handleTipoClienteChange = (e) => {
+    setSelectedTipoCliente(e.target.value);
+  };
+  // useEffect(() => {
+  //   console.log("location.state:", location.state); // Muestra los datos de location.state
+  //   if (repartoId) {
+  //     const obtenerReparto = async () => {
+  //       try {
+  //         const response = await axios.get(
+  //           `http://localhost:3000/api/repartos/${repartoId}`
+  //         );
+  //         const repartoData = response.data;
+  //         console.log(
+  //           "Detalles del reparto obtenidos del backend:",
+  //           repartoData
+  //         ); // Aquí mostramos la fecha
+  //         setReparto(repartoData);
+  //       } catch (error) {
+  //         setError("Error al obtener los detalles del reparto");
+  //         console.error(error);
+  //       }
+  //     };
+  //     obtenerReparto();
+  //   }
+  // }, [repartoId]);
 
   useEffect(() => {
-    console.log("location.state:", location.state); // Muestra los datos de location.state
     if (repartoId) {
       const obtenerReparto = async () => {
         try {
@@ -35,8 +98,31 @@ const RepartoDetalles = ({}) => {
           console.log(
             "Detalles del reparto obtenidos del backend:",
             repartoData
-          ); // Aquí mostramos la fecha
+          );
           setReparto(repartoData);
+
+          // Mapeamos los datos para asegurarnos de que los nombres de los artículos estén disponibles
+          const clientesConNombresDeArticulos =
+            repartoData.clientesArticulos.map((cliente) => ({
+              ...cliente,
+              articulos: cliente.articulos.map((articulo) => ({
+                ...articulo,
+                nombre: articulo.articuloId?.nombre || "Nombre no disponible",
+              })),
+            }));
+
+          setClientesArticulos(clientesConNombresDeArticulos);
+
+          // Aplicamos el filtro aquí mismo
+          if (tipoCliente) {
+            setClientesFiltrados(
+              clientesConNombresDeArticulos.filter(
+                (cliente) => cliente.clienteId.tipoCliente === tipoCliente
+              )
+            );
+          } else {
+            setClientesFiltrados(clientesConNombresDeArticulos); // Si no hay filtro, mostramos todos los clientes
+          }
         } catch (error) {
           setError("Error al obtener los detalles del reparto");
           console.error(error);
@@ -44,7 +130,48 @@ const RepartoDetalles = ({}) => {
       };
       obtenerReparto();
     }
-  }, [repartoId]);
+  }, [repartoId, tipoCliente]); // Ahora dependemos de `tipoCliente` también
+
+  // Este useEffect filtra los clientes por localidad
+
+  useEffect(() => {
+    const obtenerLocalidades = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/localidades"
+        );
+        setLocalidades(response.data); // Almacena las localidades en el estado
+      } catch (error) {
+        console.error("Error al obtener las localidades:", error);
+      }
+    };
+
+    obtenerLocalidades();
+  }, []);
+
+  useEffect(() => {
+    console.log("Filtrando por localidad", selectedLocalidad);
+
+    // Si hay una localidad seleccionada, filtra los clientes
+    if (selectedLocalidad) {
+      const clientesFiltrados = clientesArticulos.filter(
+        (clienteArticulo) =>
+          clienteArticulo.clienteId.localidad === selectedLocalidad
+      );
+      console.log("Clientes filtrados por localidad:", clientesFiltrados);
+      setFilteredClientes(clientesFiltrados);
+    } else {
+      // Si no se selecciona localidad, muestra todos los clientes
+      setFilteredClientes(clientesArticulos);
+    }
+  }, [selectedLocalidad, clientesArticulos]);
+
+  // Manejador de cambio de localidad
+  // const handleLocalidadChange = (e) => {
+  //   const localidadId = e.target.value;
+  //   setSelectedLocalidad(localidadId); // Actualizar la localidad seleccionada
+  //   console.log("Localidad seleccionada:", localidadId);
+  // };
 
   useEffect(() => {
     console.log("location.state:", location.state);
@@ -289,6 +416,93 @@ const RepartoDetalles = ({}) => {
 
   // Función para generar el PDF
 
+  // const generarPDF = () => {
+  //   const doc = new jsPDF();
+
+  //   // Título del documento
+  //   doc.setFontSize(18);
+  //   doc.text("Detalles del Reparto", 14, 20);
+
+  //   // Obtener la fecha actual
+  //   const fechaActual = new Date().toLocaleDateString("es-ES", {
+  //     day: "numeric",
+  //     month: "long",
+  //     year: "numeric",
+  //   });
+  //   doc.setFontSize(12);
+  //   doc.text(`Fecha: ${fechaActual}`, 14, 30);
+
+  //   // Datos para la tabla
+  //   const rows = [];
+  //   let totalReparto = 0; // Variable para el total del reparto
+
+  //   clientesArticulos.forEach((clienteArticulo) => {
+  //     const nombreCliente = `${clienteArticulo.clienteId.nombre} ${clienteArticulo.clienteId.apellido}`;
+  //     const pago = clienteArticulo.pagadoCompleto
+  //       ? `Pagado completo: $${clienteArticulo.totalCliente.toFixed(2)}`
+  //       : `Monto pagado: $${clienteArticulo.montoPagado.toFixed(2)}`;
+
+  //     // Agregar una fila para cada artículo, con el cliente solo en la primera
+  //     clienteArticulo.articulos.forEach((articulo, index) => {
+  //       if (index === 0) {
+  //         rows.push([
+  //           nombreCliente,
+  //           articulo.articuloId.nombre,
+  //           articulo.cantidad,
+  //           `$${articulo.importe.toFixed(2)}`,
+  //           `${articulo.cantidadDevuelta || 0}`, // Cantidad devuelta
+  //           pago,
+  //           clienteArticulo.deuda.toFixed(2),
+  //           clienteArticulo.totalCliente.toFixed(2),
+  //         ]);
+  //         totalReparto += clienteArticulo.totalCliente; // Acumular total del reparto
+  //       } else {
+  //         rows.push([
+  //           "", // Dejar vacío para el nombre del cliente en las filas subsiguientes
+  //           articulo.articuloId.nombre,
+  //           articulo.cantidad,
+  //           `$${articulo.importe.toFixed(2)}`,
+  //           `${articulo.cantidadDevuelta || 0}`, // Cantidad devuelta
+  //           "", // Dejar vacío para el pago
+  //           "", // Dejar vacío para la deuda
+  //           "", // Dejar vacío para el total
+  //         ]);
+  //       }
+  //     });
+  //   });
+
+  //   // Definir columnas
+  //   const columns = [
+  //     { header: "Cliente", dataKey: "cliente" },
+  //     { header: "Artículo", dataKey: "articulo" },
+  //     { header: "Cantidad", dataKey: "cantidad" },
+  //     { header: "Importe", dataKey: "importe" },
+  //     { header: "Devolución", dataKey: "devolucion" },
+  //     { header: "Pago", dataKey: "pago" },
+  //     { header: "Deuda", dataKey: "deuda" },
+  //     { header: "Total", dataKey: "total" },
+  //   ];
+
+  //   // Agregar tabla al documento
+  //   autoTable(doc, {
+  //     head: [columns.map((col) => col.header)],
+  //     body: rows,
+  //     startY: 40, // Ajustar la posición para que no se solape con la fecha
+  //     theme: "grid",
+  //   });
+
+  //   // Agregar el total del reparto debajo de la tabla
+  //   doc.setFontSize(14);
+  //   doc.text(
+  //     `Importe total del reparto: $${totalReparto.toFixed(2)}`,
+  //     14,
+  //     doc.autoTable.previous.finalY + 10
+  //   );
+
+  //   // Guardar el PDF
+  //   doc.save("reparto_detalles.pdf");
+  // };
+
   const generarPDF = () => {
     const doc = new jsPDF();
 
@@ -307,7 +521,7 @@ const RepartoDetalles = ({}) => {
 
     // Datos para la tabla
     const rows = [];
-    let totalReparto = 0; // Variable para el total del reparto
+    let totalReparto = 0;
 
     clientesArticulos.forEach((clienteArticulo) => {
       const nombreCliente = `${clienteArticulo.clienteId.nombre} ${clienteArticulo.clienteId.apellido}`;
@@ -315,7 +529,6 @@ const RepartoDetalles = ({}) => {
         ? `Pagado completo: $${clienteArticulo.totalCliente.toFixed(2)}`
         : `Monto pagado: $${clienteArticulo.montoPagado.toFixed(2)}`;
 
-      // Agregar una fila para cada artículo, con el cliente solo en la primera
       clienteArticulo.articulos.forEach((articulo, index) => {
         if (index === 0) {
           rows.push([
@@ -323,28 +536,27 @@ const RepartoDetalles = ({}) => {
             articulo.articuloId.nombre,
             articulo.cantidad,
             `$${articulo.importe.toFixed(2)}`,
-            `${articulo.cantidadDevuelta || 0}`, // Cantidad devuelta
+            `${articulo.cantidadDevuelta || 0}`,
             pago,
             clienteArticulo.deuda.toFixed(2),
             clienteArticulo.totalCliente.toFixed(2),
           ]);
-          totalReparto += clienteArticulo.totalCliente; // Acumular total del reparto
+          totalReparto += clienteArticulo.totalCliente;
         } else {
           rows.push([
-            "", // Dejar vacío para el nombre del cliente en las filas subsiguientes
+            "",
             articulo.articuloId.nombre,
             articulo.cantidad,
             `$${articulo.importe.toFixed(2)}`,
-            `${articulo.cantidadDevuelta || 0}`, // Cantidad devuelta
-            "", // Dejar vacío para el pago
-            "", // Dejar vacío para la deuda
-            "", // Dejar vacío para el total
+            `${articulo.cantidadDevuelta || 0}`,
+            "",
+            "",
+            "",
           ]);
         }
       });
     });
 
-    // Definir columnas
     const columns = [
       { header: "Cliente", dataKey: "cliente" },
       { header: "Artículo", dataKey: "articulo" },
@@ -356,15 +568,13 @@ const RepartoDetalles = ({}) => {
       { header: "Total", dataKey: "total" },
     ];
 
-    // Agregar tabla al documento
     autoTable(doc, {
       head: [columns.map((col) => col.header)],
       body: rows,
-      startY: 40, // Ajustar la posición para que no se solape con la fecha
+      startY: 40,
       theme: "grid",
     });
 
-    // Agregar el total del reparto debajo de la tabla
     doc.setFontSize(14);
     doc.text(
       `Importe total del reparto: $${totalReparto.toFixed(2)}`,
@@ -372,8 +582,12 @@ const RepartoDetalles = ({}) => {
       doc.autoTable.previous.finalY + 10
     );
 
-    // Guardar el PDF
-    doc.save("reparto_detalles.pdf");
+    // Convertir el PDF a un Blob y abrirlo en una nueva ventana
+    const pdfBlob = doc.output("blob");
+    const blobUrl = URL.createObjectURL(pdfBlob);
+
+    const printWindow = window.open(blobUrl, "_blank");
+    printWindow.onload = () => printWindow.print();
   };
 
   return (
@@ -384,11 +598,49 @@ const RepartoDetalles = ({}) => {
       >
         Volver
       </Link>
+      <div className="flex space-x-4 items-center mb-4 m-3">
+        {/* Filtro por localidad */}
+        <div className="flex flex-col">
+          <label className="text-gray-700 font-bold text-sm mb-1">
+            Localidad:
+          </label>
+          <select
+            value={selectedLocalidad}
+            onChange={handleLocalidadChange}
+            className="w-40 px-2 py-1 border rounded-md text-sm"
+          >
+            <option value="">Seleccionar</option>
+            {localidades.map((localidad) => (
+              <option key={localidad._id} value={localidad._id}>
+                {localidad.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Filtro por tipo de cliente */}
+        <div className="flex flex-col">
+          <label className="text-gray-700 font-bold text-sm mb-1">
+            Tipo de cliente:
+          </label>
+          <select
+            value={selectedTipoCliente}
+            onChange={handleTipoClienteChange}
+            className="w-40 px-2 py-1 border rounded-md text-sm"
+          >
+            <option value="">Seleccionar</option>
+            <option value="lista">Lista</option>
+            <option value="individual">Individual</option>
+          </select>
+        </div>
+      </div>
+
       <h1 className="text-2xl font-bold mb-4 mt-4 m-3">
         Detalles del reparto N°: {numeroPedido}
       </h1>
+
       <h2 className="text-lg mb-4 m-3">
-        Fecha del reparto:{" "}
+        Fecha del reparto:{""}
         {reparto
           ? new Date(reparto.fecha).toLocaleDateString()
           : "Fecha no disponible"}
@@ -398,7 +650,8 @@ const RepartoDetalles = ({}) => {
       ) : (
         <>
           <div className="space-y-4 m-3">
-            {clientesArticulos.map((clienteArticulo) => (
+            {/* {clientesArticulos.map((clienteArticulo) => ( */}
+            {filteredClientes.map((clienteArticulo) => (
               <div
                 key={clienteArticulo._id}
                 className="border px-3 rounded-md shadow-md my-8"
@@ -443,11 +696,14 @@ const RepartoDetalles = ({}) => {
                 </div>
                 <div className="flex justify-between mt-1 mb-1">
                   <div className="flex flex-wrap gap-4">
-                    {clienteArticulo.articulos.map((articulo) => (
-                      <div key={articulo.articuloId._id} className="mb-1">
+                    {clienteArticulo.articulos.map((articulo, index) => (
+                      <div
+                        key={articulo.articuloId?._id || index}
+                        className="mb-1"
+                      >
                         <div className="flex items-center">
                           <span className="font-medium">
-                            {articulo.articuloId.nombre}:
+                            {articulo.nombre || "Nombre no disponible"}:
                           </span>
                           <span className="ml-2">{articulo.cantidad}</span>
                         </div>

@@ -97,11 +97,65 @@ const obtenerDeudaPendiente = async (clienteId) => {
 
 // Ejemplo de controlador para obtener los detalles de un reparto
 
+// const obtenerRepartoDetalles = async (req, res) => {
+//   try {
+//     const reparto = await Repartos.findById(req.params.repartoId).populate(
+//       "clientesArticulos.clienteId"
+//     );
+//     if (!reparto) {
+//       return res.status(404).json({ message: "Reparto no encontrado" });
+//     }
+
+//     // Calcular deuda pendiente
+//     const repartosPrevios = await Repartos.find({
+//       fecha: { $lt: reparto.fecha },
+//     }).sort({ fecha: -1 });
+//     const deudaPendientePorCliente = {};
+
+//     for (const clienteArticulo of reparto.clientesArticulos) {
+//       const clienteId = clienteArticulo.clienteId._id.toString();
+//       deudaPendientePorCliente[clienteId] = 0;
+
+//       for (const repartoPrevio of repartosPrevios) {
+//         const clientePrevio = repartoPrevio.clientesArticulos.find(
+//           (ca) => ca.clienteId.toString() === clienteId
+//         );
+//         if (clientePrevio) {
+//           deudaPendientePorCliente[clienteId] += clientePrevio.deuda || 0;
+//         }
+//       }
+//     }
+
+//     const clientesArticulosConDeudaPendiente = reparto.clientesArticulos.map(
+//       (clienteArticulo) => {
+//         const deudaPendiente =
+//           deudaPendientePorCliente[clienteArticulo.clienteId._id.toString()] ||
+//           0;
+//         return {
+//           ...clienteArticulo.toObject(),
+//           deudaPendiente,
+//         };
+//       }
+//     );
+
+//     res.json({
+//       ...reparto.toObject(),
+//       clientesArticulos: clientesArticulosConDeudaPendiente,
+//     });
+//   } catch (error) {
+//     console.error("Error al obtener los detalles del reparto:", error);
+//     res.status(500).json({ message: "Error interno del servidor" });
+//   }
+// };
+
 const obtenerRepartoDetalles = async (req, res) => {
   try {
-    const reparto = await Repartos.findById(req.params.repartoId).populate(
-      "clientesArticulos.clienteId"
-    );
+    // Poblar los clientes y artículos relacionados
+    const reparto = await Repartos.findById(req.params.repartoId)
+      .populate("clientesArticulos.clienteId") // Poblar los datos del cliente
+      .populate("clientesArticulos.articulos.articuloId", "nombre")
+      .populate("clientesArticulos.clienteId.localidad");
+
     if (!reparto) {
       return res.status(404).json({ message: "Reparto no encontrado" });
     }
@@ -110,6 +164,7 @@ const obtenerRepartoDetalles = async (req, res) => {
     const repartosPrevios = await Repartos.find({
       fecha: { $lt: reparto.fecha },
     }).sort({ fecha: -1 });
+
     const deudaPendientePorCliente = {};
 
     for (const clienteArticulo of reparto.clientesArticulos) {
@@ -126,13 +181,24 @@ const obtenerRepartoDetalles = async (req, res) => {
       }
     }
 
+    // Incluir los nombres de los artículos y la deuda pendiente
     const clientesArticulosConDeudaPendiente = reparto.clientesArticulos.map(
       (clienteArticulo) => {
         const deudaPendiente =
           deudaPendientePorCliente[clienteArticulo.clienteId._id.toString()] ||
           0;
+
+        // Mapeo de los artículos con los nombres incluidos
+        const articulosConNombres = clienteArticulo.articulos.map(
+          (articulo) => ({
+            ...articulo.toObject(),
+            nombre: articulo.articuloId.nombre, // Asumimos que "articuloId" es el objeto con el nombre
+          })
+        );
+
         return {
           ...clienteArticulo.toObject(),
+          articulos: articulosConNombres, // Incluimos los artículos con nombre
           deudaPendiente,
         };
       }

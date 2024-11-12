@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
+import { imprimirPDF } from "./ImprimirListados";
 registerLocale("es", es);
 
 const FacturacionIndividual = () => {
@@ -60,7 +61,9 @@ const FacturacionIndividual = () => {
             direccion: clienteArticulo.clienteId.direccion,
             articulos: clienteArticulo.articulos.map((articulo) => ({
               nombre: articulo.articuloId.nombre,
-               precio: articulo.precio ? articulo.precio : (articulo.importe / articulo.cantidad).toFixed(2),
+              precio: articulo.precio
+                ? articulo.precio
+                : (articulo.importe / articulo.cantidad).toFixed(2),
               cantidad: articulo.cantidad,
               importe: articulo.importe,
             })),
@@ -80,7 +83,7 @@ const FacturacionIndividual = () => {
     return facturas;
   };
 
-  const generatePDF = (factura, fechaSeleccionada) => {
+  const generatePDF = async (factura, fechaSeleccionada) => {
     const doc = new jsPDF();
 
     const formattedDate = new Date(fechaSeleccionada).toLocaleDateString();
@@ -99,13 +102,13 @@ const FacturacionIndividual = () => {
     const tableData = factura.articulos.map((articulo) => [
       articulo.nombre,
       articulo.cantidad,
-     `$${Number(articulo.precio).toFixed(2)}`,
+      `$${Number(articulo.precio).toFixed(2)}`,
       `$${Number(articulo.importe).toFixed(2)}`,
     ]);
 
     doc.autoTable({
       startY: 70,
-      head: [["Descripción", "Cantidad","Precio unidad", "Importe"]],
+      head: [["Descripción", "Cantidad", "Precio unidad", "Importe"]],
       body: tableData,
       theme: "striped",
       styles: { fillColor: [255, 255, 255], textColor: [0, 0, 0] },
@@ -117,15 +120,14 @@ const FacturacionIndividual = () => {
       align: "right",
     });
 
-    doc.save(
-      `factura_${factura.cliente}_${new Date().toLocaleDateString()}.pdf`
-    );
+    // Enviar a imprimir en lugar de guardar
+    await imprimirPDF(doc);
   };
 
-   const generateAllPDFs = () => {
-    facturas.forEach((factura) => {
-      generatePDF(factura, selectedDate);
-    });
+  const generateAllPDFs = async () => {
+    for (const factura of facturas) {
+      await generatePDF(factura, selectedDate);
+    }
   };
 
   return (
@@ -158,7 +160,7 @@ const FacturacionIndividual = () => {
                 <tr>
                   <th className="px-4 py-2 border">Descripción</th>
                   <th className="px-4 py-2 border">Cantidad</th>
-                   <th className="px-4 py-2 border">Precio unidad</th>
+                  <th className="px-4 py-2 border">Precio unidad</th>
                   <th className="px-4 py-2 border">Importe</th>
                 </tr>
               </thead>
@@ -185,19 +187,17 @@ const FacturacionIndividual = () => {
             >
               Imprimir Factura
             </button>
-           
           </div>
         ))}
       </div>
       <div className="flex justify-end">
         <button
-               onClick={generateAllPDFs}
-              className="mb-6 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Imprimir Todas las Facturas
-            </button>
+          onClick={generateAllPDFs}
+          className="mb-6 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Imprimir Todas las Facturas
+        </button>
       </div>
-       
     </div>
   );
 };

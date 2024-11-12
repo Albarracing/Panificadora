@@ -221,26 +221,28 @@ const FormularioCliente = ({ onClose }) => {
           articuloId: producto._id,
           nombre: producto.nombre,
           cantidad: cantidad,
-          descuento: producto.descuento,
+          descuento: producto.descuento || 0,
         };
       }),
     };
 
     console.log("Datos a enviar:", clienteData);
-
     try {
-      // Actualizar cliente
-      const response = await actualizarCliente(clienteData, id);
-      console.log("Respuesta del backend:", response);
+      // Decidir la función a llamar según si es creación o actualización
+      const response = id
+        ? await actualizarCliente(clienteData, id) // Actualizar
+        : await guardarCliente(clienteData); // Crear
+
       setAlerta({
-        msg: `Cliente actualizado correctamente`,
+        msg: `Cliente ${id ? "actualizado" : "guardado"} correctamente`,
         error: false,
       });
 
-      // Resetear el formulario
+      // Resetear el formulario y cerrar el modal
       resetFormulario();
       onClose();
     } catch (error) {
+      console.error("Error al guardar el cliente:", error);
       const mensajeError =
         error.response && error.response.data
           ? error.response.data
@@ -289,189 +291,6 @@ const FormularioCliente = ({ onClose }) => {
     setArticulosSeleccionados([]);
     setId(null);
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   // Validar que todos los campos necesarios estén presentes y sean válidos
-  //   if (
-  //     [
-  //       direccion,
-  //       celular,
-  //       localidadId,
-  //       localidadNombre,
-  //       descuento,
-  //       vuelta,
-  //       tipoCliente,
-  //     ].some((campo) => typeof campo === "string" && campo.trim() === "") ||
-  //     !localidadId ||
-  //     !localidadNombre
-  //   ) {
-  //     setAlerta({
-  //       msg: "Todos los campos son obligatorios, excepto nombre y apellido.",
-  //       error: true,
-  //     });
-  //     return;
-  //   }
-
-  //   const clienteData = {
-  //     nombre,
-  //     apellido,
-  //     direccion,
-  //     celular,
-  //     localidadId,
-  //     localidadNombre,
-  //     descuento,
-  //     vuelta,
-  //     tipoCliente,
-  //     articuloData: [
-  //       ...productos
-  //         .map((producto) => ({
-  //           articuloId: producto._id,
-  //           nombre: producto.nombre,
-  //           cantidad: producto.cantidad,
-  //           descuento: producto.descuento,
-  //         }))
-  //         .filter((articulo) => {
-  //           // Filtrar artículos con al menos una cantidad mayor a 0
-  //           return Object.values(articulo.cantidad).some(
-  //             (cantidad) => cantidad > 0
-  //           );
-  //         }),
-  //       ...articulosSeleccionados.map((articuloId) => ({
-  //         articuloId,
-  //         nombre: articulosDisponibles.find((art) => art._id === articuloId)
-  //           .nombre,
-  //         cantidad: {
-  //           lunes: 0,
-  //           martes: 0,
-  //           miercoles: 0,
-  //           jueves: 0,
-  //           viernes: 0,
-  //           sabado: 0,
-  //           domingo: 0,
-  //         },
-  //       })),
-  //     ].filter((articulo) => {
-  //       // Filtrar artículos con al menos una cantidad > 0
-  //       return Object.values(articulo.cantidad).some(
-  //         (cantidad) => cantidad > 0
-  //       );
-  //     }),
-  //   };
-
-  //   // Validar la estructura de clienteData
-  //   if (!clienteData.articuloData.length) {
-  //     setAlerta({
-  //       msg: "Debe haber al menos un artículo con cantidad mayor a 0",
-  //       error: true,
-  //     });
-  //     return;
-  //   }
-
-  //   console.log("Datos antes de enviar:", clienteData.articuloData);
-  //   console.log("Datos a enviar:", clienteData);
-
-  //   try {
-  //     for (const producto of productos) {
-  //       if (todosLosDiasEnCero(producto.cantidad)) {
-  //         await eliminarArticuloSiCantidadCero(
-  //           id,
-  //           producto._id,
-  //           producto.cantidad
-  //         ); // Asegúrate de pasar la cantidad aquí
-  //       }
-  //     }
-
-  //     // Decidir la función a llamar según si es creación o actualización
-  //     const response = id
-  //       ? await actualizarCliente(clienteData, id) // Actualizar
-  //       : await guardarCliente(clienteData); // Crear
-
-  //     setAlerta({
-  //       msg: `Cliente ${id ? "actualizado" : "guardado"} correctamente`,
-  //       error: false,
-  //     });
-
-  //     // Resetear el formulario
-  //     setCodigo("");
-  //     setNombre("");
-  //     setApellido("");
-  //     setDireccion("");
-  //     setCelular("");
-  //     setLocalidadId("");
-  //     setLocalidadNombre("");
-  //     setDescuento("");
-  //     setVuelta("");
-  //     setTipoCliente("lista");
-  //     setProductos([]);
-  //     setArticulosDisponibles([]);
-  //     setArticulosSeleccionados([]);
-  //     setId(null);
-  //     onClose();
-  //   } catch (error) {
-  //     const mensajeError =
-  //       error.response && error.response.data
-  //         ? error.response.data
-  //         : "Hubo un error al guardar el cliente. Por favor, inténtalo de nuevo.";
-
-  //     console.error("Error al guardar el cliente:", mensajeError);
-  //     setAlerta({
-  //       msg: mensajeError,
-  //       error: true,
-  //     });
-  //   }
-  // };
-
-  // const todosLosDiasEnCero = (cantidad) => {
-  //   return Object.values(cantidad).every((valor) => valor === 0);
-  // };
-
-  // const eliminarArticuloSiCantidadCero = async (
-  //   clienteId,
-  //   articuloId,
-  //   cantidad
-  // ) => {
-  //   try {
-  //     // Verificar si la cantidad es cero antes de eliminar
-  //     const esCantidadCero = Object.values(cantidad).every(
-  //       (cant) => cant === 0
-  //     );
-
-  //     if (esCantidadCero) {
-  //       await axios.delete(
-  //         `http://localhost:3000/api/articulos-clientes/articulo/${articuloId}`
-  //       );
-  //       console.log(
-  //         `Artículo con ID ${articuloId} eliminado para el cliente ${clienteId}`
-  //       );
-  //     } else {
-  //       console.log(
-  //         `No se puede eliminar el artículo con ID ${articuloId} porque tiene cantidades mayores que cero.`
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.log("Error al eliminar el artículo:", error);
-  //   }
-  // };
-
-  // const handleCantidadChange = (e, productoId, dia) => {
-  //   const value = parseFloat(e.target.value); // parseFloat directamente sobre el valor
-  //   // Actualizar la cantidad del producto seleccionado para el día específico
-  //   setProductos((prevProductos) =>
-  //     prevProductos.map((producto) =>
-  //       producto._id === productoId
-  //         ? {
-  //             ...producto,
-  //             cantidad: {
-  //               ...producto.cantidad,
-  //               [dia]: value || 0, // Usar el valor directamente, permitiendo decimales
-  //             },
-  //           }
-  //         : producto
-  //     )
-  //   );
-  // };
 
   const handleDescuentoChange = (e, productoId) => {
     const { value } = e.target;

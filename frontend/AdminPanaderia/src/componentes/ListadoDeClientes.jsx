@@ -37,6 +37,7 @@ const ListadoDeClientes = () => {
   const handleClosePopup = () => {
     setIsPopupOpen(false);
     setSelectedCliente(null);
+    obtenerClientes();
   };
 
   const handleFormSubmit = async (clienteData) => {
@@ -45,8 +46,10 @@ const ListadoDeClientes = () => {
     } else {
       await crearCliente(clienteData); // Asegúrate de tener la función crearCliente definida en tu hook useClientes
     }
-    setRefresh((prev) => prev + 1); // Refresca la lista de clientes
+    //
+    obtenerClientes();
     handleClosePopup();
+    setRefresh((prev) => prev + 1); // Refresca la lista de clientes
   };
 
   const handleClickEliminar = (clienteId) => {

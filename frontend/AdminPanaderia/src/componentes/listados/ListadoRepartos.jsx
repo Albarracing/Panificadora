@@ -7,6 +7,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
+import { imprimirPDF } from "./ImprimirListados";
 registerLocale("es", es);
 
 const ListadoRepartos = () => {
@@ -120,12 +121,12 @@ const ListadoRepartos = () => {
       body: tableBody,
       startY: 30,
     });
-
-    doc.save(
-      `reporte_repartos_${lugarPreparacion}_${
-        selectedDate.toISOString().split("T")[0]
-      }.pdf`
-    );
+    imprimirPDF(doc);
+    // doc.save(
+    //   `reporte_repartos_${lugarPreparacion}_${
+    //     selectedDate.toISOString().split("T")[0]
+    //   }.pdf`
+    // );
   };
 
   return (
