@@ -78,73 +78,7 @@ const findArticulo = React.useCallback((clienteId, articuloId) => {
   const handleTipoClienteChange = (e) => {
     setSelectedTipoCliente(e.target.value);
   };
-  // useEffect(() => {
-  //   console.log("location.state:", location.state); // Muestra los datos de location.state
-  //   if (repartoId) {
-  //     const obtenerReparto = async () => {
-  //       try {
-  //         const response = await axios.get(
-  //           `http://localhost:3000/api/repartos/${repartoId}`
-  //         );
-  //         const repartoData = response.data;
-  //         console.log(
-  //           "Detalles del reparto obtenidos del backend:",
-  //           repartoData
-  //         ); // Aquí mostramos la fecha
-  //         setReparto(repartoData);
-  //       } catch (error) {
-  //         setError("Error al obtener los detalles del reparto");
-  //         console.error(error);
-  //       }
-  //     };
-  //     obtenerReparto();
-  //   }
-  // }, [repartoId]);
-
-  // useEffect(() => {
-  //   if (repartoId) {
-  //     const obtenerReparto = async () => {
-  //       try {
-  //         const response = await axios.get(
-  //           `http://localhost:3000/api/repartos/${repartoId}`
-  //         );
-  //         const repartoData = response.data;
-  //         console.log(
-  //           "Detalles del reparto obtenidos del backend:",
-  //           repartoData
-  //         );
-  //         setReparto(repartoData);
-
-  //         // Mapeamos los datos para asegurarnos de que los nombres de los artículos estén disponibles
-  //         const clientesConNombresDeArticulos =
-  //           repartoData.clientesArticulos.map((cliente) => ({
-  //             ...cliente,
-  //             articulos: cliente.articulos.map((articulo) => ({
-  //               ...articulo,
-  //               nombre: articulo.articuloId?.nombre || "Nombre no disponible",
-  //             })),
-  //           }));
-
-  //         setClientesArticulos(clientesConNombresDeArticulos);
-
-  //         // Aplicamos el filtro aquí mismo
-  //         if (tipoCliente) {
-  //           setClientesFiltrados(
-  //             clientesConNombresDeArticulos.filter(
-  //               (cliente) => cliente.clienteId.tipoCliente === tipoCliente
-  //             )
-  //           );
-  //         } else {
-  //           setClientesFiltrados(clientesConNombresDeArticulos); // Si no hay filtro, mostramos todos los clientes
-  //         }
-  //       } catch (error) {
-  //         setError("Error al obtener los detalles del reparto");
-  //         console.error(error);
-  //       }
-  //     };
-  //     obtenerReparto();
-  //   }
-  // }, [repartoId, tipoCliente]); // Ahora dependemos de `tipoCliente` también
+ 
 
 // Este useEffect se ejecuta cada vez que cambia el repartoId, nueva versión
   useEffect(() => {
@@ -219,12 +153,6 @@ const findArticulo = React.useCallback((clienteId, articuloId) => {
     }
   }, [selectedLocalidad, clientesArticulos]);
 
-  // Manejador de cambio de localidad
-  // const handleLocalidadChange = (e) => {
-  //   const localidadId = e.target.value;
-  //   setSelectedLocalidad(localidadId); // Actualizar la localidad seleccionada
-  //   console.log("Localidad seleccionada:", localidadId);
-  // };
 
   useEffect(() => {
     console.log("location.state:", location.state);
@@ -261,13 +189,6 @@ const findArticulo = React.useCallback((clienteId, articuloId) => {
     deudaAnterior: clienteArticulo.deudaAnterior || 0, // Asegurando que deudaAnterior esté definido
   });
 
-  // const handleCantidadDevueltaChange = (clienteId, articuloId, newValue) => {
-  //   setTempCantidadDevuelta((prev) => ({
-  //     ...prev,
-  //     [`${clienteId}_${articuloId}`]: newValue,
-  //   }));
-  // };
-
   const handleCantidadDevueltaChange = React.useCallback((clienteId, articuloId, newValue) => {
     const articulo = findArticulo(clienteId, articuloId);
     
@@ -287,57 +208,6 @@ const findArticulo = React.useCallback((clienteId, articuloId) => {
     return () => clearTimeout(timeoutId);
   }, [findArticulo, tempCantidadDevuelta]);
 
-//---esta es la antigua funcion de blur--
-  // const handleCantidadDevueltaBlur = (clienteId, articuloId) => {
-  //   const cantidadDevuelta =
-  //     parseFloat(tempCantidadDevuelta[`${clienteId}_${articuloId}`]) || 0;
-  //   setClientesArticulos((prevClientesArticulos) =>
-  //     prevClientesArticulos.map((clienteArticulo) => {
-  //       if (clienteArticulo.clienteId._id === clienteId) {
-  //         const nuevosArticulos = clienteArticulo.articulos.map((articulo) => {
-  //           if (articulo.articuloId._id === articuloId) {
-  //             const precioUnitario = articulo.importe / articulo.cantidad;
-
-  //             const nuevoImporte =
-  //               (articulo.cantidad - cantidadDevuelta) * precioUnitario;
-
-  //             if (isNaN(nuevoImporte)) {
-  //               console.error(
-  //                 `Nuevo Importe calculado como NaN para articuloId=${articuloId}`
-  //               );
-  //               return articulo;
-  //             }
-
-  //             return {
-  //               ...articulo,
-  //               cantidadDevuelta,
-  //               importe: nuevoImporte,
-  //             };
-  //           }
-  //           return articulo;
-  //         });
-
-  //         const nuevoTotalCliente = nuevosArticulos.reduce(
-  //           (acc, art) => acc + art.importe,
-  //           0
-  //         );
-
-  //         const nuevaDeuda = Math.max(
-  //           nuevoTotalCliente - clienteArticulo.montoPagado,
-  //           0
-  //         );
-
-  //         return {
-  //           ...clienteArticulo,
-  //           articulos: nuevosArticulos,
-  //           totalCliente: nuevoTotalCliente,
-  //           deuda: nuevaDeuda,
-  //         };
-  //       }
-  //       return clienteArticulo;
-  //     })
-  //   );
-  // };
 
   //---esta es la nueva funcion de blur, con modificaciones--
   const handleCantidadDevueltaBlur = useCallback((clienteId, articuloId) => {
@@ -388,18 +258,7 @@ const findArticulo = React.useCallback((clienteId, articuloId) => {
     });
   }, [tempCantidadDevuelta, calcularNuevoImporte]);
 
- 
 
-  // const calcularImporteTotalReparto = () => {
-  //   const total = clientesArticulos.reduce(
-  //     (acc, clienteArticulo) => acc + clienteArticulo.totalCliente,
-  //     0
-  //   );
-
-  //   console.log("Importe Total Reparto:", total);
-
-  //   return total;
-  // };
 
 // Función para calcular el importe total del reparto, nueva version
   const calcularImporteTotalReparto = React.useCallback(() => {
@@ -411,27 +270,16 @@ const findArticulo = React.useCallback((clienteId, articuloId) => {
     );
   }, [clientesArticulos]);
 
-  // const handlePagoCompletoChangeLocal = (clienteId, pagadoCompleto) => {
-  //   setClientesArticulos((prevClientesArticulos) =>
-  //     prevClientesArticulos.map((clienteArticulo) =>
-  //       clienteArticulo.clienteId._id === clienteId
-  //         ? {
-  //             ...clienteArticulo,
-  //             pagadoCompleto,
-  //             montoPagado: pagadoCompleto
-  //               ? clienteArticulo.totalCliente
-  //               : clienteArticulo.montoPagado,
-  //             deuda: pagadoCompleto
-  //               ? 0
-  //               : Math.max(
-  //                   clienteArticulo.totalCliente - clienteArticulo.montoPagado,
-  //                   0
-  //                 ),
-  //           }
-  //         : clienteArticulo
-  //     )
-  //   );
-  // };
+// Función para calcular el importe total del reparto filtrado
+const calcularImporteTotalFiltrado = React.useCallback(() => {
+  return Number(
+    filteredClientes.reduce(
+      (acc, clienteArticulo) => acc + (clienteArticulo.totalCliente || 0),
+      0
+    ).toFixed(2)
+  );
+}, [filteredClientes]);
+
 
   // Manejador de cambio de pagadoCompleto, nueva version
   const handlePagoCompletoChangeLocal = React.useCallback((clienteId, pagadoCompleto) => {
@@ -454,22 +302,7 @@ const findArticulo = React.useCallback((clienteId, articuloId) => {
     });
   }, []);
 
-  // const handleMontoPagadoChange = (clienteId, montoPagado) => {
-  //   setClientesArticulos((prevClientesArticulos) =>
-  //     prevClientesArticulos.map((clienteArticulo) =>
-  //       clienteArticulo.clienteId._id === clienteId
-  //         ? {
-  //             ...clienteArticulo,
-  //             montoPagado: parseFloat(montoPagado) || 0,
-  //             deuda: Math.max(
-  //               clienteArticulo.totalCliente - (parseFloat(montoPagado) || 0),
-  //               0
-  //             ),
-  //           }
-  //         : clienteArticulo
-  //     )
-  //   );
-  // };
+
 
   // Manejador de cambio de montoPagado, nueva version
   const handleMontoPagadoChange = React.useCallback((clienteId, montoPagado) => {
@@ -602,6 +435,7 @@ const findArticulo = React.useCallback((clienteId, articuloId) => {
       return newErrores;
     });
   }, []);
+  
 
   if (!clientesArticulos.length) {
     return <div>No hay pedidos disponibles.</div>;
@@ -621,6 +455,7 @@ const findArticulo = React.useCallback((clienteId, articuloId) => {
       handleCantidadDevueltaBlur={handleCantidadDevueltaBlur}
       handleGuardarCambios={handleGuardarCambios}
       calcularImporteTotalReparto={calcularImporteTotalReparto}
+      calcularImporteTotalFiltrado={calcularImporteTotalFiltrado}
       numeroPedido={numeroPedido}
       reparto={reparto}
       loading={loading}

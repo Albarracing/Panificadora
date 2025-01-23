@@ -20,10 +20,13 @@ const FormularioRepDet = ({
   handleCantidadDevueltaChange, // Maneja cambios en cantidades devueltas
   handleCantidadDevueltaBlur, // Maneja cuando se pierde el foco en cantidades
   handleGuardarCambios, // Maneja el guardado de cambios
-  calcularImporteTotalReparto, // Calcula el total del reparto
+  calcularImporteTotalReparto,
+  calcularImporteTotalFiltrado, // Calcula el total del reparto
   errores,
   generarPDF,
 }) => {
+
+  
   return (
     <div className="container mx-auto " id="reparto-details">
       <Link
@@ -122,20 +125,20 @@ const FormularioRepDet = ({
                     {clienteArticulo.articulos.map((articulo, index) => (
                       <div
                         key={articulo.articuloId?._id || index}
-                        className="bg-gray-50 p-2 rounded-lg flex items-center justify-between"
+                        className="bg-gray-200 p-2 rounded-lg flex items-center justify-between"
                       >
                         <div className="flex-1 min-w-0">
                           <div className="text-lg font-medium ">
                             {articulo.nombre || "Nombre no disponible"}
                           </div>
-                          <div className="flex items-center text-lg text-gray-600 space-x-2">
+                          <div className="flex items-center text-lg text-black space-x-2">
                             <span>Cantidad: {articulo.cantidad}</span>
                             <span>-</span>
                             <span>${(articulo.importe || 0).toFixed(2)}</span>
                           </div>
                         </div>
                         
-                        <div className="flex flex-col items-center ">
+                         <div className="flex  mt-6 items-start ">
                           <label className="text-lg ">Devuelve:</label>
                           <input
                             type="number"
@@ -197,16 +200,16 @@ const FormularioRepDet = ({
                   <div className="flex justify-between items-center">
                     <div className="flex space-x-6 text-sm">
                       <div>
-                        <span className="font-medium">Pagado:</span>{" "}
-                        <span className="text-green-600">
+                        <span className="font-bold text-lg">Pagado:</span>{" "}
+                        <span className="text-green-600 text-lg">
                           ${clienteArticulo.montoPagado
                             ? clienteArticulo.montoPagado.toFixed(2)
                             : "0.00"}
                         </span>
                       </div>
                       <div>
-                        <span className="font-medium">Restante:</span>{" "}
-                        <span className="text-red-600">
+                        <span className="font-bold text-lg">Restante:</span>{" "}
+                        <span className="text-red-600 text-lg">
                           ${(
                             clienteArticulo.totalCliente -
                             (clienteArticulo.montoPagado || 0)
@@ -266,8 +269,13 @@ const FormularioRepDet = ({
           {/* Sección de totales y botones */}
           <div className="bg-white rounded-lg shadow-md p-4 m-3">
             <div className="text-xl font-semibold mb-4">
-              Importe total del reparto: $
-              {calcularImporteTotalReparto().toFixed(2)}
+              <h2>Importe total del reparto: $
+              {calcularImporteTotalReparto().toFixed(2)}</h2>
+              {(selectedLocalidad || selectedTipoCliente) && (
+              <h2 className="text-lg font-semibold text-blue-600">
+                Importe Total Filtrado: ${calcularImporteTotalFiltrado().toFixed(2)}
+              </h2>
+              )}
             </div>
             <div className="flex items-center space-x-6">
               <button
@@ -315,8 +323,10 @@ FormularioRepDet.propTypes = {
   handleCantidadDevueltaBlur: PropTypes.func.isRequired,
   handleGuardarCambios: PropTypes.func.isRequired,
   calcularImporteTotalReparto: PropTypes.func.isRequired,
+  calcularImporteTotalFiltrado: PropTypes.func.isRequired,
   errores: PropTypes.object.isRequired,
   generarPDF: PropTypes.func.isRequired,
+  
 };
 
 export default FormularioRepDet;

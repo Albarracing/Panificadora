@@ -51,7 +51,6 @@ const ListaClientes = () => {
 
   useEffect(() => {
     obtenerArticulos();
-    //  obtenerClientes();
     obtenerClientesConArticulos();
     obtenerRepartidores();
     obtenerLocalidades();
@@ -75,6 +74,9 @@ const ListaClientes = () => {
         if (respuesta && respuesta.data) {
           console.log("Datos recibidos del backend:", respuesta.data);
           setClientes(respuesta.data);
+          // Seleccionar automáticamente todos los clientes
+          const todosLosClientesIds = respuesta.data.map(cliente => cliente._id);
+          setClientesSeleccionados(todosLosClientesIds);
         } else {
           console.error("Respuesta inválida del backend:", respuesta);
         }
@@ -84,6 +86,23 @@ const ListaClientes = () => {
     }
     fetchData();
   }, []);
+
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const respuesta = await obtenerClientesConArticulos();
+  //       if (respuesta && respuesta.data) {
+  //         console.log("Datos recibidos del backend:", respuesta.data);
+  //         setClientes(respuesta.data);
+  //       } else {
+  //         console.error("Respuesta inválida del backend:", respuesta);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error al obtener datos del backend", error);
+  //     }
+  //   }
+  //   fetchData();
+  // }, []);
 
   const obtenerArticulos = async () => {
     try {
