@@ -3,7 +3,7 @@ export const BASE_URL =
   import.meta.env.REACT_APP_BACKEND_URL || "https://panificadora.onrender.com";
 
 // Prefijos comunes
-export const API_PREFIX = `${BASE_URL}/api`;
+export const API_PREFIX = `${BASE_URL}`;
 
 // Rutas base principales
 export const ROUTES = {
