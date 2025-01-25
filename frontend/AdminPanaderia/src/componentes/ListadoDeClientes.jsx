@@ -71,7 +71,9 @@ const ListadoDeClientes = () => {
     setClienteAEliminar(null);
   };
 
-  const validClients = clientes.filter((cliente) => cliente);
+  const validClients = Array.isArray(clientes)
+    ? clientes.filter((cliente) => cliente)
+    : [];
 
   return (
     <>

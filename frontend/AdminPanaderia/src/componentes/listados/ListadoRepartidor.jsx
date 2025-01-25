@@ -131,7 +131,7 @@ const ListadoRepartidor = () => {
           className="w-full px-3 py-2 border rounded-md"
         />
       </div>
-      {repartos.length > 0 ? (
+      {Array.isArray(repartos) && repartos.length > 0 ? (
         <div>
           {repartos.map((reparto) =>
             reparto.clientesArticulos

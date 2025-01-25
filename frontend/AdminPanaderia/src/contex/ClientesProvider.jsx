@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import API_PREFIX from "../config/api";
+import API_PREFIX from "../config/api.js";
 
 const ClientesContext = createContext();
 
@@ -28,9 +28,7 @@ export const ClientesProvider = ({ children }) => {
     setCargando(true);
     setError(null);
     try {
-      const response = await axios.get(
-        `${API_PREFIX}/api/clientes/${id}`
-      );
+      const response = await axios.get(`${API_PREFIX}/api/clientes/${id}`);
       setCliente(response.data.cliente);
       setArticulos(response.data.articulos); // Guardar los artículos
     } catch (error) {
