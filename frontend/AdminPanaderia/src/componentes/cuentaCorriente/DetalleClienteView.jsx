@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import API_PREFIX from "../../config/api";
 
 const DetalleClienteView = () => {
   const { clienteId } = useParams();
@@ -27,7 +28,7 @@ const DetalleClienteView = () => {
       try {
         console.log("Solicitando datos para el cliente ID:", clienteId);
         const response = await axios.get(
-          `http://localhost:3000/api/cuenta-corriente/movimientos/${clienteId}`,
+          `${API_PREFIX}/api/cuenta-corriente/movimientos/${clienteId}`,
           { headers: { "Cache-Control": "no-cache" } }
         );
         console.log("Cliente ID enviado:", clienteId);

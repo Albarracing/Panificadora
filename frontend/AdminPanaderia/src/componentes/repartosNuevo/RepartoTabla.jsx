@@ -7,6 +7,8 @@ import { faTrash, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AiFillDelete } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
+
+
 const RepartoTabla = () => {
   const [pedidosPorFecha, setPedidosPorFecha] = useState({});
   const [currentPage, setCurrentPage] = useState(1);

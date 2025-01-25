@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import API_PREFIX from "../../config/api";
 
 const FormularioArticulos = ({ articulo, onSubmit, onClose }) => {
   const [nombre, setNombre] = useState("");
@@ -40,7 +41,7 @@ const FormularioArticulos = ({ articulo, onSubmit, onClose }) => {
     const fetchLocalidades = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:3000/api/localidades/"
+          `${API_PREFIX}/localidades/`
         );
         setLocalidades(data);
       } catch (error) {

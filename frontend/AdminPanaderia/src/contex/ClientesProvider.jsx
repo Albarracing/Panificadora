@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import API_PREFIX from "../config/api";
 
 const ClientesContext = createContext();
 
@@ -14,7 +15,7 @@ export const ClientesProvider = ({ children }) => {
     setCargando(true);
     setError(null);
     try {
-      const response = await axios.get("http://localhost:3000/api/clientes");
+      const response = await axios.get(`${API_PREFIX}/api/clientes`);
       setClientes(response.data);
     } catch (error) {
       setError("Error al obtener los clientes");
@@ -28,7 +29,7 @@ export const ClientesProvider = ({ children }) => {
     setError(null);
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/clientes/${id}`
+        `${API_PREFIX}/api/clientes/${id}`
       );
       setCliente(response.data.cliente);
       setArticulos(response.data.articulos); // Guardar los artículos
@@ -44,7 +45,7 @@ export const ClientesProvider = ({ children }) => {
     setError(null);
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/clientes/${clienteId}/`
+        `${API_PREFIX}/api/clientes/${clienteId}/`
       );
       return response.data;
     } catch (error) {
@@ -59,7 +60,7 @@ export const ClientesProvider = ({ children }) => {
   const guardarCliente = async (clienteData) => {
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/api/clientes",
+        `${API_PREFIX}/api/clientes`,
         clienteData
       );
       setClientes((prevClientes) => [...prevClientes, data.cliente]);
@@ -80,7 +81,7 @@ export const ClientesProvider = ({ children }) => {
       );
 
       const { data } = await axios.put(
-        `http://localhost:3000/api/clientes/${id}`,
+        `${API_PREFIX}/api/clientes/${id}`,
         clienteData
       );
 
@@ -110,7 +111,7 @@ export const ClientesProvider = ({ children }) => {
         throw new Error("ID no proporcionado");
       }
 
-      const url = `http://localhost:3000/api/clientes/${id}`;
+      const url = `${API_PREFIX}/api/clientes/${id}`;
       const { data } = await axios.delete(url);
       setClientes((prevClientes) =>
         prevClientes.filter((cliente) => cliente._id !== id)

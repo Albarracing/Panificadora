@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import API_PREFIX from "../../config/api";
 
 const ListaRepartidores = () => {
   const [repartidores, setRepartidores] = useState([]);
@@ -20,9 +21,7 @@ const ListaRepartidores = () => {
 
   const fetchRepartidores = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3000/api/repartidores"
-      );
+      const response = await axios.get(`${API_PREFIX}/api/repartidores`);
       setRepartidores(response.data);
     } catch (error) {
       console.error("Error al obtener los repartidores:", error);
@@ -33,7 +32,7 @@ const ListaRepartidores = () => {
     if (editingRepartidor) {
       try {
         const response = await axios.put(
-          `http://localhost:3000/api/repartidores/${editingRepartidor._id}`,
+          `${API_PREFIX}/api/repartidores/${editingRepartidor._id}`,
           { nombre, alias }
         );
         console.log("Repartidor actualizado:", response.data);
@@ -44,7 +43,7 @@ const ListaRepartidores = () => {
     } else {
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/repartidores",
+          `${API_PREFIX}/api/repartidores`,
           {
             nombre,
             alias,
@@ -71,7 +70,7 @@ const ListaRepartidores = () => {
 
   const handleEliminarRepartidor = async () => {
     try {
-      await axios.delete(`http://localhost:3000/api/repertidores/${deleteId}`);
+      await axios.delete(`${API_PREFIX}/api/repartidores/${deleteId}`);
       console.log("Repartidor eliminado:", deleteId);
       setShowDeleteConfirm(false);
       setDeleteId(null);

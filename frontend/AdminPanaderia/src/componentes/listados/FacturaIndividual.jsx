@@ -8,6 +8,7 @@ import { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
 import { imprimirPDF } from "./ImprimirListados";
 registerLocale("es", es);
+import API_PREFIX from "../../config/api";
 
 const FacturacionIndividual = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -28,7 +29,7 @@ const FacturacionIndividual = () => {
     const formattedDate = fecha.toISOString().split("T")[0];
     try {
       const response = await fetch(
-        `http://localhost:3000/api/repartos/fecha/${formattedDate}`
+        `S${API_PREFIX}/api/repartos/fecha/${formattedDate}`
       );
       const data = await response.json();
 

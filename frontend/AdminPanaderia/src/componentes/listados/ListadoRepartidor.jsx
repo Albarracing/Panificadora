@@ -9,6 +9,7 @@ import { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
 import { imprimirPDF } from "./ImprimirListados";
 registerLocale("es", es);
+import API_PREFIX from "../../config/api";
 
 const ListadoRepartidor = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -24,7 +25,7 @@ const ListadoRepartidor = () => {
     const formattedDate = date.toISOString().split("T")[0];
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/repartos/fecha/${formattedDate}`
+        `${API_PREFIX}/api/repartos/fecha/${formattedDate}`
       );
       setRepartos(response.data);
     } catch (error) {

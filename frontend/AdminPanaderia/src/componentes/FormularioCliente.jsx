@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Alerta from "./Alerta";
 import useClientes from "../hook/useClientes";
 import axios from "axios";
+import { API_PREFIX } from "../config/api";
 
 const FormularioCliente = ({ onClose }) => {
   const [codigo, setCodigo] = useState("");
@@ -55,7 +56,7 @@ const FormularioCliente = ({ onClose }) => {
         .then((articulosCliente) => {
           // Obtener todos los artículos disponibles
           axios
-            .get(`http://localhost:3000/api/articulos`)
+            .get(`${API_PREFIX}/api/articulos`)
             .then((response) => {
               const articulosDisponibles = response.data;
 
@@ -106,9 +107,7 @@ const FormularioCliente = ({ onClose }) => {
   useEffect(() => {
     const obtenerLocalidades = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/localidades"
-        );
+        const response = await axios.get(`${API_PREFIX}/api/localidades`);
         setLocalidades(response.data); // Actualiza el estado con las localidades obtenidas del backend
       } catch (error) {
         console.log(error);
@@ -129,7 +128,7 @@ const FormularioCliente = ({ onClose }) => {
   useEffect(() => {
     const obtenerProductos = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3000/api/articulos");
+        const { data } = await axios.get(`${API_PREFIX}/api/articulos`);
         setProductos((prevProductos) =>
           prevProductos.length === 0
             ? data.map((producto) => ({
@@ -158,9 +157,7 @@ const FormularioCliente = ({ onClose }) => {
     if (!id) {
       const obtenerCodigo = async () => {
         try {
-          const { data } = await axios.get(
-            "http://localhost:3000/api/clientes/"
-          );
+          const { data } = await axios.get(`${API_PREFIX}/api/clientes/`);
           setCodigo(data.codigo); // Obtener el código generado desde el backend
         } catch (error) {
           console.log(error);

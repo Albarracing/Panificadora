@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import API_PREFIX from "../../config/api";
 
 const CuentaCorrienteView = () => {
   const [clientes, setClientes] = useState([]);
@@ -9,7 +10,7 @@ const CuentaCorrienteView = () => {
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/clientes");
+        const response = await axios.get(`${API_PREFIX}/api/clientes`);
         const clientesData = response.data;
 
         const clientesConEstado = await Promise.all(
@@ -34,7 +35,7 @@ const CuentaCorrienteView = () => {
   const obtenerEstadoCuenta = async (clienteId) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/cuenta-corriente/${clienteId}`
+        `${API_PREFIX}/api/cuenta-corriente/${clienteId}`
       );
 
       if (!response.ok) {

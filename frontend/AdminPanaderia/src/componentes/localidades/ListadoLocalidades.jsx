@@ -3,6 +3,8 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import API_PREFIX from "../../config/api";
+
 const ListaLocalidades = () => {
   const [Localidades, setLocalidades] = useState([]);
   const [nombre, setNombre] = useState("");
@@ -19,7 +21,7 @@ const ListaLocalidades = () => {
 
   const fetchLocalidad = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/localidades");
+      const response = await axios.get(`${API_PREFIX}/api/localidades`);
       setLocalidades(response.data);
     } catch (error) {
       console.error("Error al obtener los localidades:", error);
@@ -30,7 +32,7 @@ const ListaLocalidades = () => {
     if (editingLocalidad) {
       try {
         const response = await axios.put(
-          `http://localhost:3000/api/localidades/${editingLocalidad._id}`,
+          `${API_PREFIX}/api/localidades/${editingLocalidad._id}`,
           { nombre, codigoPostal }
         );
         console.log("Localidad actualizada:", response.data);
@@ -41,7 +43,7 @@ const ListaLocalidades = () => {
     } else {
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/localidades",
+          `${API_PREFIX}/api/localidades`,
           {
             nombre,
             codigoPostal,
@@ -68,7 +70,7 @@ const ListaLocalidades = () => {
 
   const handleEliminarLocalidad = async () => {
     try {
-      await axios.delete(`http://localhost:3000/api/localidades/${deleteId}`);
+      await axios.delete(`${API_PREFIX}/api/localidades/${deleteId}`);
       console.log("Localidad eliminada:", deleteId);
       setShowDeleteConfirm(false);
       setDeleteId(null);

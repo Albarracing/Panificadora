@@ -5,6 +5,7 @@ import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import useArticulos from "../../hook/useArticulos";
 import FormularioArticulos from "./FormularioArticulos";
 import PopupArticulo from "./PopupArticulo";
+import API_PREFIX from "../../config/api";
 
 const ListadoDeArticulos = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -26,7 +27,7 @@ const ListadoDeArticulos = () => {
 
   const obtenerArticulos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/articulos");
+      const response = await fetch(`${API_PREFIX}/api/articulos`);
       if (response.ok) {
         const data = await response.json();
         setArticulos(data);

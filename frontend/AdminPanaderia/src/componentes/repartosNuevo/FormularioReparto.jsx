@@ -4,6 +4,7 @@ import axios from "axios";
 import DatePicker, { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
 import Modal from "react-modal";
+import API_PREFIX from "../../config/api";
 
 const ListaClientes = () => {
   const [clientes, setClientes] = useState([]);
@@ -40,7 +41,7 @@ const ListaClientes = () => {
   const obtenerReparto = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/repartos/${repartoId}`
+        `${API_PREFIX}/api/repartos/${repartoId}`
       );
       setRepartoData(response.data);
       console.log("Datos del reparto:", response.data);
@@ -87,26 +88,9 @@ const ListaClientes = () => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const respuesta = await obtenerClientesConArticulos();
-  //       if (respuesta && respuesta.data) {
-  //         console.log("Datos recibidos del backend:", respuesta.data);
-  //         setClientes(respuesta.data);
-  //       } else {
-  //         console.error("Respuesta inválida del backend:", respuesta);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error al obtener datos del backend", error);
-  //     }
-  //   }
-  //   fetchData();
-  // }, []);
-
   const obtenerArticulos = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/articulos");
+      const response = await axios.get(`${API_PREFIX}/api/articulos`);
       setArticulos(response.data); // Almacena todos los artículos en el estado
     } catch (error) {
       console.error("Error al obtener artículos:", error);
@@ -116,7 +100,7 @@ const ListaClientes = () => {
   const obtenerRepartidores = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/repartidores"
+        `${API_PREFIX}/api/repartidores`
       );
       setRepartidores(response.data);
     } catch (error) {
@@ -127,7 +111,7 @@ const ListaClientes = () => {
   const obtenerLocalidades = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/localidades/"
+        `${API_PREFIX}/api/localidades/`
       );
       console.log("Localidades obtenidas:", response.data); // Depuración
       setLocalidades(response.data);
@@ -139,7 +123,7 @@ const ListaClientes = () => {
   const obtenerClientesConArticulos = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/clientes/clientes-con-articulos"
+        `${API_PREFIX}/api/clientes/clientes-con-articulos`
       );
       console.log("Respuesta de obtenerClientesConArticulos:", response);
       if (!response || !response.data) {
@@ -177,7 +161,7 @@ const ListaClientes = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/clientes/cantidades/${day}`
+        `${API_PREFIX}/api/clientes/cantidades/${day}`
       );
       const cantidades = response.data;
 
@@ -416,7 +400,7 @@ const ListaClientes = () => {
         console.log("Datos enviados para actualizar:", data);
         console.log("repartoId:", repartoId);
         await axios.put(
-          `http://localhost:3000/api/repartos/${repartoId}`,
+          `${API_PREFIX}/api/repartos/${repartoId}`,
           data
         );
         alert("Reparto editado exitosamente");
@@ -424,7 +408,7 @@ const ListaClientes = () => {
       } else {
         // Si no existe un repartoId, se crea un nuevo reparto
         console.log("Datos enviados para crear:", data);
-        await axios.post("http://localhost:3000/api/repartos", data);
+        await axios.post(`${API_PREFIX}/api/repartos`, data);
         alert("Reparto creado exitosamente");
         navigate("/RepartosNuevo");
       }

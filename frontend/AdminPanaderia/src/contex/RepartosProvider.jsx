@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
-
+import API_PREFIX from "../config/api";
 const RepartosContext = createContext();
 
 export const RepartosProvider = ({ children }) => {
@@ -11,19 +11,19 @@ export const RepartosProvider = ({ children }) => {
 
   const obtenerReparto = async (id) => {
     const { data } = await axios.get(
-      `http://localhost:3000/api/repartos/${id}`
+      `${API_PREFIX}/api/repartos/${id}`
     );
     console.log("Datos del reparto:", data);
     return data;
   };
 
   const actualizarReparto = async (id, reparto) => {
-    await axios.put(`http://localhost:3000/api/repartos/${id}`, reparto);
+    await axios.put(`${API_PREFIX}/api/repartos/${id}`, reparto);
   };
 
   const obtenerRepartos = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/repartos");
+      const response = await axios.get(`${API_PREFIX}/api/repartos`);
       setRepartos(response.data);
     } catch (err) {
       setError(err);
@@ -42,7 +42,7 @@ export const RepartosProvider = ({ children }) => {
       );
 
       const { data } = await axios.post(
-        "http://localhost:3000/api/repartos/",
+        `${API_PREFIX}/api/repartos/`,
         nuevoReparto,
         {
           headers: {
@@ -69,7 +69,7 @@ export const RepartosProvider = ({ children }) => {
         `Actualizando pago completo: repartoId=${repartoId}, clienteId=${clienteId}, pagadoCompleto=${pagadoCompleto}, montoPagado=${montoPagado}, deuda=${deuda}`
       );
       const response = await axios.put(
-        `http://localhost:3000/api/repartos/${repartoId}/clientes/${clienteId}/pago`,
+        `${API_PREFIX}/api/repartos/${repartoId}/clientes/${clienteId}/pago`,
         { pagadoCompleto, montoPagado, deuda },
         {
           headers: {
@@ -96,7 +96,7 @@ export const RepartosProvider = ({ children }) => {
         `Guardando monto pagado: repartoId=${repartoId}, clienteId=${clienteId}, montoPagado=${montoPagado}, deuda=${deuda}`
       );
       const response = await axios.put(
-        `http://localhost:3000/api/repartos/${repartoId}/clientes/${clienteId}/monto`,
+        `${API_PREFIX}/api/repartos/${repartoId}/clientes/${clienteId}/monto`,
         { montoPagado, deuda },
         {
           headers: {
@@ -125,7 +125,7 @@ export const RepartosProvider = ({ children }) => {
         `Registrando devolución: repartoId=${repartoId}, clienteId=${clienteId}, articuloId=${articuloId}, cantidadDevuelta=${cantidadDevuelta}, deuda=${deuda}, fechaDevolucion=${fechaDevolucion}`
       );
       const response = await axios.put(
-        `http://localhost:3000/api/repartos/${repartoId}/clientes/${clienteId}/articulos/${articuloId}/devolucion`,
+        `${API_PREFIX}/api/repartos/${repartoId}/clientes/${clienteId}/articulos/${articuloId}/devolucion`,
         { cantidadDevuelta, deuda, fechaDevolucion },
         {
           headers: {
@@ -147,7 +147,7 @@ export const RepartosProvider = ({ children }) => {
 
   const eliminarReparto = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/repartos/${id}`);
+      await axios.delete(`${API_PREFIX}/api/repartos/${id}`);
       setRepartos((prevRepartos) =>
         prevRepartos.filter((reparto) => reparto._id !== id)
       );

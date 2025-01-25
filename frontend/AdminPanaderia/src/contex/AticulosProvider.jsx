@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import API_PREFIX from "../config/api";
 
 const ArticulosContext = createContext();
 
@@ -8,9 +9,12 @@ export const ArticulosProvider = ({ children }) => {
   const [articulo, setArticulo] = useState({});
   const [error, setError] = useState(null);
 
+  // Obtén la URL base del backend desde la variable de entorno
+  //const API_PREFI = process.env.REACT_APP_BACKEND_URL;
+
   const obtenerArticulos = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3000/api/articulos/");
+      const { data } = await axios.get(`${API_PREFIX}/api/articulos/`);
       setArticulos(data);
     } catch (error) {
       console.log(error);
@@ -26,7 +30,7 @@ export const ArticulosProvider = ({ children }) => {
     try {
       console.log("Enviando artículo al backend:", articulo);
       const { data: articuloGuardado } = await axios.post(
-        "http://localhost:3000/api/articulos/",
+        `${API_PREFIX}/api/articulos/`,
         articulo
       );
       console.log("Artículo guardado:", articuloGuardado);
@@ -41,7 +45,7 @@ export const ArticulosProvider = ({ children }) => {
     try {
       console.log("Datos enviados:", articuloActualizado); // <-- Agregar este console.log
       const { data: articuloActualizadoResponse } = await axios.put(
-        `http://localhost:3000/api/articulos/${id}`,
+        `${API_PREFIX}/api/articulos/${id}`,
         articuloActualizado
       );
       setArticulos(
@@ -64,7 +68,7 @@ export const ArticulosProvider = ({ children }) => {
 
     if (confirmar) {
       try {
-        await axios.delete(`http://localhost:3000/api/articulos/${id}`);
+        await axios.delete(`${API_PREFIX}/api/articulos/${id}`);
         const articulosActualizados = articulos.filter(
           (articuloState) => articuloState._id !== id
         );
